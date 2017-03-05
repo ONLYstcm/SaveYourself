@@ -9,7 +9,7 @@
 #include "enemies.h"
 #include "gameplay.h"
 #define screenHeight 600
-#define screenWidth 800
+#define screenWidth 1024
 
 using namespace std;
 

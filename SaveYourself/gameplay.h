@@ -20,19 +20,16 @@ void play(ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *background) {
 
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue(); 
 
-	al_register_event_source(event_queue, al_get_display_event_source(display));
+	//al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	enemies::missile badboy;
-	badboy.create(0, 0);
+	badboy.create(display, 0, 0);
 	
 	short m_x, m_y; //Mouse x & Mouse y
-	
-	m_y = 0;
-	m_x = 0;
-	float speed = 1;
-	double dt = 0.5;
+	float speed = 2;
+	__int8 pace = 10; //The smaller this value, the faster the rockets move
 	bool alive = true;
 	bool draw = false;
 
@@ -41,28 +38,23 @@ void play(ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *background) {
 	while(alive) {
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
-		if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
+		if (events.type == ALLEGRO_EVENT_TIMER && !draw) {
 		   draw = true;
-			   m_x = events.mouse.x;
-			   m_y = events.mouse.y;
-			   //badboy.advance_by_time(&dt, &m_x, &m_y, &speed);
-		   //badboy.advance_by_time(dt);
 		}
-
-		if (draw) {
+		else if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
+			m_x = events.mouse.x;
+			m_y = events.mouse.y;
+			badboy.setDir(m_x, m_y);
+		}
+		else if (draw && al_is_event_queue_empty(event_queue)) {
 			draw = false;
+			badboy.advance_by_time(pace,speed);
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			al_draw_bitmap(background, 0, 0, 0);
 			badboy.update(display);
 			al_flip_display();
-			al_rest(0.02);
-		}
-
-		else if (events.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			break;
 		}
 	}
-
 	al_destroy_timer(timer);
 }
 

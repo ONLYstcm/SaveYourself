@@ -15,16 +15,19 @@ namespace enemies
 	{
 	public:
 		//Note: lookup rand() function to understand 42 & 54.6
-		void create(float initial_vx = 0, float initial_vy = 0); //This is the 'missile' object itself
+		void create(ALLEGRO_DISPLAY *display, float initial_vx = 0, float initial_vy = 0); //This is the 'missile' object itself
 		void update(ALLEGRO_DISPLAY *display); //refresh missile bitmap
 		void attack(missile Missile, int level); //level determine how strong the attack will be
-		void advance_by_time(double *dt, short *x, short *y, float *speed); //to be used in the 'attack' function to make to object accelerate/deccelerate
+		void setDir(short x, short y);
+		void advance_by_time(__int8 setpace, float speed); //to be used in the 'attack' function to make to object accelerate/deccelerate
 		void destroy();
 
 	private:
-		int x;
+		__int8 pace=0;
 		bool visible;
-		float dir;
+		float angle;
+		float x_dir;
+		float y_dir;
 		short x_pos;
 		short y_pos;
 		float x_v;	//x velocity
@@ -43,7 +46,6 @@ namespace enemies
 		void attack(spaceship Spaceship, int level);
 		void advance_by_time(double dt);
 	private:
-		int x;
 		float x_pos;
 		float y_pos;
 		float x_v;
