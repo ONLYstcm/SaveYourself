@@ -38,5 +38,11 @@
     <ClInclude Include="gameplay.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="reeko_physics_engine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="genesis_ai_engine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

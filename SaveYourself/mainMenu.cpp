@@ -8,8 +8,6 @@
 #include "gui_buttons.h"
 #include "enemies.h"
 #include "gameplay.h"
-#define screenHeight 600
-#define screenWidth 1024
 
 using namespace std;
 
@@ -18,25 +16,40 @@ ALLEGRO_COLOR blue, white;
 button item;
 
 int main() {
-	al_init(); //Initialise Allegro
+	ALLEGRO_TIMER *timer;
+	if (!al_init()) {
+		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
+		return -1;
+	}
+	/* Create the game timer */
+	timer = al_create_timer(1.0 / FPS);
+	if (!timer) {
+		al_show_native_message_box(NULL, NULL, NULL, "Failed to create timer!\n", NULL, NULL);
+		return -1;
+	}
 	al_init_image_addon(); //Initialise image loader
 	al_init_font_addon();
 	al_init_ttf_addon();
 	al_install_mouse();
 	al_install_keyboard();
 
+	/* Center the game window on the desktop */
+	ALLEGRO_MONITOR_INFO aminfo;
+	al_get_monitor_info(0, &aminfo);
+	int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
+	int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
+
+
 	ALLEGRO_DISPLAY *display = nullptr; //Create 'display' object (The window itself)
 	ALLEGRO_BITMAP *background = nullptr; //Create 'bitmap' object (The image itself)
-
-	al_set_app_name("Main Menu");
-	display = al_create_display(screenWidth, screenHeight); //Dimension of window
-
-	if (display == nullptr) //Check if display was not created
-	{
-		std::cerr << "Cannot Load Main Menu" << std::endl;
-		al_rest(5.0);
-		return EXIT_FAILURE;
+	display = al_create_display(GAMING_WINDOW_WIDTH, GAMING_WINDOW_HEIGHT);
+	if (!display) {
+		al_show_native_message_box(NULL, NULL, NULL, "Failed to create display!\n", NULL, NULL);
+		al_destroy_timer(timer);
+		return -1;
 	}
+	al_set_window_position(display, desktopWidth / 2 - GAMING_WINDOW_WIDTH / 2, desktopHeight / 2 - GAMING_WINDOW_HEIGHT / 2);
+	al_set_window_title(display, "Main Menu");
 	
 	/*cout << "Please enter your name?" << endl;
 	string name;
