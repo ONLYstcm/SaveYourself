@@ -96,7 +96,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			draw = false;
 			clear_disp(display, background);
 			for (int i = 0; i < no_missiles; i++) {
-				AI::follow(enemy[i].particle, target);
+				//AI::follow(enemy[i].particle, target);
+				AI::follow((enemy[i].particle), target);
 				enemy[i].render(); //update
 			}
 			al_flip_display();

@@ -18,7 +18,7 @@ namespace AI {
 		void random_border_positition() {
 		}
 
-		void follow(physics::object object, physics::object target, double acceleration=1) {
+		void follow(physics::object &object, physics::object &target, double acceleration=1) {
 			//Get angle between target and object
 			object.setAngle(atan2(object.getVector('P').y - (target.getVector('P').y), (target.getVector('P').x)-object.getVector('P').x));	//Get angle from missile to mouse icon
 			Vector dir;
@@ -26,18 +26,18 @@ namespace AI {
 			dir.x = cos(object.getAngle());
 			dir.y = sin(object.getAngle());
 			if (dir.x < 0)
-				object.move('L', NULL, NULL, NULL);
+				object.accelerate('L');
 			else {
-				object.move('R', NULL, NULL, NULL);
+				object.accelerate('R');
 			}
 			if (dir.y < 0)
-				object.move('D', NULL, NULL, NULL);
+				object.accelerate('D');
 			else {
-				object.move('U', NULL, NULL, NULL);
+				object.accelerate('U');
 			}
 		}
 
-		void follow(physics::object object, Vector target, double acceleration = 1) {
+		void follow(physics::object &object, Vector target, double acceleration = 1) {
 			//Get angle between target and object
 			object.setAngle(atan2(object.getVector('P').y - (target.y), (target.x) - object.getVector('P').x));	//Get angle from missile to mouse icon
 			Vector dir;
@@ -45,14 +45,14 @@ namespace AI {
 			dir.x = cos(object.getAngle());
 			dir.y = sin(object.getAngle());
 			if (dir.x < 0)
-				object.move('L', NULL, NULL, NULL);
+				object.accelerate('L');
 			else {
-				object.move('R', NULL, NULL, NULL);
+				object.accelerate('R');
 			}
 			if (dir.y < 0)
-				object.move('D', NULL, NULL, NULL);
+				object.accelerate('D');
 			else {
-				object.move('U', NULL, NULL, NULL);
+				object.accelerate('U');
 			}
 		}
 }

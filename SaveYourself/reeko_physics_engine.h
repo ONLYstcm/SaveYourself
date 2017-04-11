@@ -13,6 +13,8 @@
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
 
+using namespace std;
+
 struct Vector {
 	double x;
 	double y;
@@ -82,7 +84,6 @@ namespace physics {
 			case 'R':
 			case 'r':
 				pos.x += speed_x;
-				cout << pos.x << endl;
 				if (pos.x > GAMING_WINDOW_WIDTH)
 					pos.x = GAMING_WINDOW_WIDTH;
 				break;
@@ -93,7 +94,7 @@ namespace physics {
 
 
 		//Move object constant acceleration and direction
-		void move(char direction, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y=1, double unit_x=1,double unit_y=1) {
+		void accelerate(char direction, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y=1, double unit_x=1,double unit_y=1) {
 			double vi;//Initial_velocity
 			switch (direction)
 			{
@@ -130,7 +131,7 @@ namespace physics {
 					vel.x = 0;
 					accel.x = 0;
 				break;
-				//Move left
+				//Move right
 			case 'R':
 			case 'r':
 				vi = vel.x;
