@@ -68,11 +68,17 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		srand(time(0)); //Make random function based on actual time
 
 		const __int8 no_missiles = 1;
+		const __int8 no_spaceships = 1;
+
 		enemies::missile enemy[no_missiles];
+		enemies::spaceship enemyspaceship[no_spaceships];
+
 		for (int i = 0; i < no_missiles; i++) {
 			enemy[i].create(6);
 		}
-
+		for (int i = 0; i < no_spaceships; i++) {
+			enemyspaceship[i].create();
+		}
 		Vector target;
 
 	while (alive) {
@@ -99,6 +105,10 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 				//AI::follow(enemy[i].particle, target);
 				AI::follow((enemy[i].particle), target);
 				enemy[i].render(); //update
+			}
+			for (int i = 0; i < no_spaceships; i++) {
+				AI::follow((enemyspaceship[i].particle), target);
+				enemyspaceship[i].render(); //update
 			}
 			al_flip_display();
 		}

@@ -14,7 +14,11 @@ namespace enemies
 		particle.initialise(20, 20);
 		render();
 		}
-
+	void spaceship::create() { //This is the 'missile' object itself
+		particle.create();
+		particle.initialise(2, 2);
+		render();
+	}
 	void missile::render() {//refresh missile bitmap
 			if (visible) {
 				
@@ -80,10 +84,19 @@ namespace enemies
 			
 		} 
 		*/
+	void spaceship::render() {//refresh missile bitmap
+		if (visible) {
+			angle = (-particle.getAngle()) + 1.5708;
+			al_draw_rotated_bitmap(spaceshipimage, 0, 0, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction of mouse
 
+		}
+	}
 
 	void missile::destroy() {
 			visible = false;
 		}
+	void spaceship::destroy() {
+		visible = false;
+	}
 
 	};
