@@ -18,7 +18,7 @@ void clear_disp(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background){
 }
 
 void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
-
+	 
 	ALLEGRO_TIMER *timer;
 	if (!al_init()) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
@@ -109,4 +109,3 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		al_destroy_event_queue(event_queue);
 	}
 }
-
