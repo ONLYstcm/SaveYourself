@@ -6,6 +6,8 @@
 #include <string>
 #include "gui_buttons.h"
 #include "enemies.h"
+#include "player.h"
+#include "nukes.h"
 #include "genesis_ai_engine.h"
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
@@ -40,7 +42,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	al_install_mouse();
 	al_install_keyboard();
 	al_init_primitives_addon();
-
+	ALLEGRO_KEYBOARD_STATE keyState;
 
 	/* Create the game event queue */
 	ALLEGRO_EVENT_QUEUE *event_queue;
@@ -56,6 +58,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_keyboard_event_source()); //stores the keyboard buttons in a queue to be executed
+
 
 	clear_disp(display, background);
 	al_start_timer(timer); //Timer started
@@ -69,6 +73,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 
 		const __int8 no_missiles = 1;
 		const __int8 no_spaceships = 1;
+		player::playership playerobj;
 
 		enemies::missile enemy[no_missiles];
 		enemies::spaceship enemyspaceship[no_spaceships];
@@ -79,12 +84,30 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		for (int i = 0; i < no_spaceships; i++) {
 			enemyspaceship[i].create();
 		}
+		playerobj.create();
+
 		Vector target;
+		nukes::nukes bomb;
 
 	while (alive) {
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
 		
+		al_get_keyboard_state(&keyState);
+		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN))
+			playerobj.particle.move('d');
+		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT))
+			playerobj.particle.move('l');
+		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT))
+			playerobj.particle.move('r');
+		if (al_key_down(&keyState, ALLEGRO_KEY_UP))
+			playerobj.particle.move('u');
+
+		
+		if (al_key_down(&keyState, ALLEGRO_KEY_SPACE)) {
+			bomb.create(playerobj.particle.getVector('P'), playerobj.particle.getAngle());
+		}
+
 		if (events.type == ALLEGRO_EVENT_TIMER) {
 			draw = true;
 		}
@@ -97,19 +120,25 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			target.x = events.mouse.x;
 			target.y = events.mouse.y;
 		}
+		
 
 		if (draw && al_is_event_queue_empty(event_queue)) {
 			draw = false;
 			clear_disp(display, background);
 			for (int i = 0; i < no_missiles; i++) {
 				//AI::follow(enemy[i].particle, target);
-				AI::follow((enemy[i].particle), target);
+				AI::follow((enemy[i].particle), playerobj.particle);
 				enemy[i].render(); //update
 			}
 			for (int i = 0; i < no_spaceships; i++) {
 				AI::follow((enemyspaceship[i].particle), target);
 				enemyspaceship[i].render(); //update
 			}
+			AI::rotate((playerobj.particle), target);
+			bomb.particle.move('s', (tan(bomb.angle1) >= 1)? 1: -1, (tan(bomb.angle1) >= 1) ? 1 : -1);
+			playerobj.render(); //update
+			bomb.render();
+
 			al_flip_display();
 		}
 	}

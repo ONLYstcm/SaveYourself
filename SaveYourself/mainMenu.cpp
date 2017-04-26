@@ -8,7 +8,7 @@
 #include "gui_buttons.h"
 #include "enemies.h"
 #include "gameplay.h"
-
+#include "player.h"
 using namespace std;
 
 ALLEGRO_COLOR blue, white;

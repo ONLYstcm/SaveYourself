@@ -55,5 +55,18 @@ namespace AI {
 			else {
 				object.accelerate('U', 1, 1, 1, 1, abs(dir.x), abs(dir.y));
 			}
+
+			
+		}
+		void rotate(physics::object &object, Vector target, double acceleration = 1) {
+			//Get angle between target and object
+			object.setAngle(atan2(object.getVector('P').y - (target.y), (target.x) - object.getVector('P').x));	//Get angle from missile to mouse icon
+			Vector dir;
+
+			//Convert to unit vector
+			dir.x = cos(object.getAngle());
+			dir.y = sin(object.getAngle());
+
+
 		}
 }

@@ -24,6 +24,12 @@
     <ClCompile Include="gameplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nukes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -43,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="genesis_ai_engine.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nukes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

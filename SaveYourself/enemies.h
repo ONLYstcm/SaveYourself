@@ -47,4 +47,5 @@ namespace enemies
 		double dt;
 		double angle;
 	};
+	
 }

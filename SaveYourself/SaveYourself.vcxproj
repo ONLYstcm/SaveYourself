@@ -152,6 +152,8 @@
     <ClCompile Include="enemies.cpp" />
     <ClCompile Include="gameplay.cpp" />
     <ClCompile Include="mainMenu.cpp" />
+    <ClCompile Include="nukes.cpp" />
+    <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -161,6 +163,8 @@
     <ClInclude Include="gameplay.h" />
     <ClInclude Include="genesis_ai_engine.h" />
     <ClInclude Include="gui_buttons.h" />
+    <ClInclude Include="nukes.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="reeko_physics_engine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

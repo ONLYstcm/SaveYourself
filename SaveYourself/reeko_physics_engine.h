@@ -88,6 +88,8 @@ namespace physics {
 					pos.x = GAMING_WINDOW_WIDTH;
 				break;
 			default:
+				pos.x += speed_x;
+				pos.y += speed_y;
 				break;
 			}
 		}
