@@ -23,7 +23,7 @@ struct Vector {
 namespace physics {
 	class object {
 	private:
-		Vector vel, accel, pos, unit_vec, forces,empty;
+		Vector vel, accel, pos, unit_vec, forces,empty,bound;
 		ALLEGRO_BITMAP *image = NULL;
 		short radius;
 		double height, length, breadth;
@@ -33,7 +33,9 @@ namespace physics {
 
 	public:
 		//Create new object
-		void create(short r = 0, short reaction_time = 0, double m = 0, double hei = 0, double len = 0, double bre = 0, double theta =0) {
+		void create(double boundx, double boundy, short r = 0, short reaction_time = 0, double m = 0, double hei = 0, double len = 0, double bre = 0, double theta =0) {
+			bound.x = boundx;
+			bound.y = boundy;
 			radius = r;
 			reflex = reaction_time;
 			mass = m;
@@ -148,6 +150,16 @@ namespace physics {
 				break;
 			}
 		}
+		
+		void travel(short direction_x, short direction_y, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y = 1, double unit_x = 1, double unit_y = 1) {
+			double vi_x, vi_y;
+			vi_x = vel.x;
+			vel.x += acceleration_x;
+			pos.x += ((vi_x + vel.x) / 2)*unit_x;
+			vi_y = vel.y;
+			vel.y += acceleration_y;
+			pos.y -= ((vi_y + vel.y) / 2)*unit_y;
+		}
 
 
 		//Returns attributes of a vector
@@ -173,6 +185,10 @@ namespace physics {
 			case 'F':
 			case 'f':
 				return forces;
+				break;
+			case 'B':
+			case 'b':
+				return bound;
 				break;
 			default:
 				return empty;
@@ -222,6 +238,14 @@ namespace physics {
 			return mass;
 		}
 
+		void setDirection(Vector target) {
+			angle=(atan2(pos.y - (target.y), (target.x) - pos.x));	//Get angle from missile to mouse icon
+			//Vector dir;
+
+			//Convert to unit vector
+			unit_vec.x = cos(angle);
+			unit_vec.y = sin(angle);
+		}
 
 		//Adds another vector
 		void addVector(char option, struct Vector vector) {
@@ -258,3 +282,14 @@ namespace physics {
 		}
 	};
 }
+
+
+
+
+/*Vector pullFromUser = arrow.head - arrow.tail;
+pullFromUser.trim(1);
+ball.particle.addForce(pullFromUser);
+ball.particle.integrate(dt);
+ball.particle.clearResultant();*/
+
+//float old_angle=0;

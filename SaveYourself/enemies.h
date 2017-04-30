@@ -17,12 +17,11 @@ namespace enemies
 		*/
 	{
 	public:
-		void create(short radius); //This is the 'missile' object itself
+		void create(int x, int y, double boundx, double boundy, short radius); //This is the 'missile' object itself
 		void render(); //refresh missile
-		//void setDirection(short x, short y); //point to the mouse
-		//void move();
 		void destroy();
 		physics::object particle;
+		string identity = "missile";
 
 	private:
 		bool visible = true;
@@ -35,11 +34,12 @@ namespace enemies
 		This class is the class for the spaceship
 		*/
 	public:
-		void create(); //This is the 'missile' object itself
+		void create(double boundx, double boundy); //This is the 'missile' object itself
 		void render(); //refresh spaceship
 		void destroy();
 		physics::object particle;
 		ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
+		string identity = "enemy ship";
 
 
 	private:

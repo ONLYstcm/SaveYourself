@@ -9,8 +9,10 @@
 #include "player.h"
 #include "nukes.h"
 #include "genesis_ai_engine.h"
+#include "staver_collision_engine.h"
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
+extern short points=0, lives=3;
 
 #define FPS  60
 
@@ -64,80 +66,95 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	clear_disp(display, background);
 	al_start_timer(timer); //Timer started
 	
-		//short m_x, m_y; //Mouse x & Mouse y
-		//The smaller this value, the faster the rockets move
 		bool alive = true;
 		bool draw = false; 
 		
 		srand(time(0)); //Make random function based on actual time
 
+		//Creating game objects
+		Vector target;
 		const __int8 no_missiles = 1;
 		const __int8 no_spaceships = 1;
 		player::playership playerobj;
-
 		enemies::missile enemy[no_missiles];
 		enemies::spaceship enemyspaceship[no_spaceships];
+		nukes::nukes bomb;
 
 		for (int i = 0; i < no_missiles; i++) {
-			enemy[i].create(6);
+			enemy[i].create(AI::random_border_positition().x, AI::random_border_positition().y,6,6,6);
 		}
 		for (int i = 0; i < no_spaceships; i++) {
-			enemyspaceship[i].create();
+			enemyspaceship[i].create(20,15);//Boundary is slight smaller than the size of the image
 		}
-		playerobj.create();
+		playerobj.create(20,20);
 
-		Vector target;
-		nukes::nukes bomb;
 
 	while (alive) {
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
-		
 		al_get_keyboard_state(&keyState);
-		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN))
+
+		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)|| al_key_down(&keyState, ALLEGRO_KEY_S))
 			playerobj.particle.move('d');
-		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT))
+		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) || al_key_down(&keyState, ALLEGRO_KEY_A))
 			playerobj.particle.move('l');
-		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT))
+		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) || al_key_down(&keyState, ALLEGRO_KEY_D))
 			playerobj.particle.move('r');
-		if (al_key_down(&keyState, ALLEGRO_KEY_UP))
+		if (al_key_down(&keyState, ALLEGRO_KEY_UP) || al_key_down(&keyState, ALLEGRO_KEY_W))
 			playerobj.particle.move('u');
 
-		
-		if (al_key_down(&keyState, ALLEGRO_KEY_SPACE)) {
-			bomb.create(playerobj.particle.getVector('P'), playerobj.particle.getAngle());
+		if (events.type == ALLEGRO_EVENT_KEY_DOWN)//Check if key was pressed 
+		{
+			switch (events.keyboard.keycode)
+			{
+			case ALLEGRO_KEY_SPACE:
+				bomb.shoot(4, 4, playerobj.particle.getVector('P'), target);
+				break;
+				//bomb.create(4,16,playerobj.particle.getVector('P'),target);
+				//playerobj.particle.getAngle()
+			}
 		}
+
 
 		if (events.type == ALLEGRO_EVENT_TIMER) {
 			draw = true;
-		}
+			}
+		
 		else if (events.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			alive = false;
 			break;
 		}
 
-		else if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
+		if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
 			target.x = events.mouse.x;
 			target.y = events.mouse.y;
+			AI::rotate((playerobj.particle), target);
 		}
+		
 		
 
 		if (draw && al_is_event_queue_empty(event_queue)) {
 			draw = false;
 			clear_disp(display, background);
 			for (int i = 0; i < no_missiles; i++) {
-				//AI::follow(enemy[i].particle, target);
 				AI::follow((enemy[i].particle), playerobj.particle);
 				enemy[i].render(); //update
 			}
 			for (int i = 0; i < no_spaceships; i++) {
-				AI::follow((enemyspaceship[i].particle), target);
+				AI::follow((enemyspaceship[i].particle), playerobj.particle);
 				enemyspaceship[i].render(); //update
 			}
-			AI::rotate((playerobj.particle), target);
-			bomb.particle.move('s', (tan(bomb.angle1) >= 1)? 1: -1, (tan(bomb.angle1) >= 1) ? 1 : -1);
+			//AI::rotate((playerobj.particle), target);
+			//bomb.particle.move('s', (tan(bomb.angle1) >= 1)? 1: -1, (tan(bomb.angle1) >= 1) ? 1 : -1);
 			playerobj.render(); //update
 			bomb.render();
+			AI::hit(bomb.particle, bomb.bullets, enemy, no_missiles);
+			AI::hit(bomb.particle, bomb.bullets, enemyspaceship, no_spaceships);
+			for (int i = 0; i < no_missiles; i++) {
+				if (collision::Collide((enemy[i].particle), playerobj.particle)) {
+					playerobj.destroy();
+				}
+			}
 
 			al_flip_display();
 		}

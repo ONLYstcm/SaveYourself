@@ -75,7 +75,6 @@
     <IncludePath>C:\allegro-5.0.10-msvc-11.0\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\allegro-5.0.10-msvc-11.0\include\;$(IncludePath)</IncludePath>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -113,7 +112,6 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\allegro\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>allegro_monolith-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -166,6 +164,7 @@
     <ClInclude Include="nukes.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="reeko_physics_engine.h" />
+    <ClInclude Include="staver_collision_engine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
