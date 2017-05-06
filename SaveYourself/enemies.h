@@ -20,6 +20,7 @@ namespace enemies
 		void create(int x, int y, double boundx, double boundy, short radius); //This is the 'missile' object itself
 		void render(); //refresh missile
 		void destroy();
+		bool isVisible();
 		physics::object particle;
 		string identity = "missile";
 
@@ -37,11 +38,10 @@ namespace enemies
 		void create(double boundx, double boundy); //This is the 'missile' object itself
 		void render(); //refresh spaceship
 		void destroy();
+		bool isVisible();
 		physics::object particle;
 		ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
 		string identity = "enemy ship";
-
-
 	private:
 		bool visible = true;
 		double dt;

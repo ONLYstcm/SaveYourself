@@ -44,7 +44,14 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	al_install_mouse();
 	al_install_keyboard();
 	al_init_primitives_addon();
+
+	/* Create the game event keystate */
 	ALLEGRO_KEYBOARD_STATE keyState;
+
+	/* Create the font text */
+	ALLEGRO_FONT *points_text; //not yet used
+	ALLEGRO_FONT *lives_text; //not yet used
+	ALLEGRO_FONT *time_text; //not yet used
 
 	/* Create the game event queue */
 	ALLEGRO_EVENT_QUEUE *event_queue;
@@ -56,7 +63,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		//return -1;
 	}
 
-
+	//Register all events
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -110,8 +117,6 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			case ALLEGRO_KEY_SPACE:
 				bomb.shoot(4, 4, playerobj.particle.getVector('P'), target);
 				break;
-				//bomb.create(4,16,playerobj.particle.getVector('P'),target);
-				//playerobj.particle.getAngle()
 			}
 		}
 
@@ -151,7 +156,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			AI::hit(bomb.particle, bomb.bullets, enemy, no_missiles);
 			AI::hit(bomb.particle, bomb.bullets, enemyspaceship, no_spaceships);
 			for (int i = 0; i < no_missiles; i++) {
-				if (collision::Collide((enemy[i].particle), playerobj.particle)) {
+				if (collision::Collide((enemy[i].particle), playerobj.particle)&&(enemy[i].isVisible())) {
 					playerobj.destroy();
 				}
 			}
@@ -159,9 +164,14 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			al_flip_display();
 		}
 	}
-	if (1) {
+
+	if (true) {
 		al_destroy_timer(timer);
 		al_destroy_display(display);
 		al_destroy_event_queue(event_queue);
 	}
+}
+
+void setText(ALLEGRO_FONT *text, const char *word, short x_index, short y_index, ALLEGRO_DISPLAY *display, ALLEGRO_COLOR colour) {
+	al_draw_text(text, colour, x_index, y_index, ALLEGRO_ALIGN_RIGHT, word); //Otherwise display the text on the screen
 }

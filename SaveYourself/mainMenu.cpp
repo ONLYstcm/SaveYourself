@@ -21,6 +21,7 @@ int main() {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
 		return -1;
 	}
+
 	/* Create the game timer */
 	timer = al_create_timer(1.0 / FPS);
 	if (!timer) {
