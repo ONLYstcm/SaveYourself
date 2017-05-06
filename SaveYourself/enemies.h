@@ -35,7 +35,7 @@ namespace enemies
 		This class is the class for the spaceship
 		*/
 	public:
-		void create(double boundx, double boundy); //This is the 'missile' object itself
+		void create(int x, int y, double boundx, double boundy); //This is the 'missile' object itself
 		void render(); //refresh spaceship
 		void destroy();
 		bool isVisible();

@@ -18,7 +18,7 @@ namespace player
 		This class is the class for the player ship
 		*/
 	public:
-		void create(double boundx, double boundy); //This is the 'missile' object itself
+		void create(double boundx, double boundy); //This is the 'player' object itself
 		void render(); //refresh spaceship
 		void destroy();
 		physics::object particle;

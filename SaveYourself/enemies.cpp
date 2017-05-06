@@ -8,30 +8,25 @@
 
 namespace enemies
 {
-
+	
 	void missile::create(int x, int y, double boundx, double boundy,short radius) { //This is the 'missile' object itself
 		particle.create(boundx, boundy, radius);
 		particle.initialise(x,y);
 		visible = true;
 		render();
 		}
-
-	void spaceship::create(double boundx, double boundy) { //This is the 'spaceship' object itself
+	void spaceship::create(int x, int y, double boundx, double boundy) { //This is the 'missile' object itself
 		particle.create(boundx, boundy);
-		particle.initialise(2, 2);
+		particle.initialise(x, y);
 		visible = true;
 		render();
 	}
-
-	/*
-	Render functions
-	*/
 	void missile::render() {//refresh missile bitmap
 			if (visible) {
 				al_draw_filled_circle(particle.getVector('P').x, particle.getVector('P').y, particle.getRadius(), al_map_rgb(250, 50, 50)); //Draw red circle
 				al_draw_filled_circle(particle.getVector('P').x, particle.getVector('P').y, particle.getRadius()*0.5, al_map_rgb(50, 50, 50)); //Draw black circle
 			}
-		}
+		} 
 
 	void spaceship::render() {//refresh missile bitmap
 		if (visible) {
@@ -44,17 +39,8 @@ namespace enemies
 	void missile::destroy() {
 		visible = false;
 		}
-
-	bool missile::isVisible(){
-		return visible;
-	}
-
-	bool spaceship::isVisible() {
-		return visible;
-	}
-
 	void spaceship::destroy() {
 		visible = false;
 	}
 
-};
+	};
