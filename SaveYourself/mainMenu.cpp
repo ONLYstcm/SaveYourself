@@ -9,7 +9,7 @@
 #include "enemies.h"
 #include "gameplay.h"
 #include "player.h"
-#include "Sound_Engine.h"
+#include "Sound_Engine_Katrina.h"
 
 using namespace std;
 
@@ -18,7 +18,10 @@ ALLEGRO_COLOR blue, white;
 button item;
 
 int main() {
-	Sound_Engine soundObj;
+
+	Sound_Engine_Katrina soundObj;
+	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.ogg");
+
 	ALLEGRO_TIMER *timer;
 	if (!al_init()) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
@@ -89,6 +92,7 @@ int main() {
 		leave = (struct menuItem *) malloc(sizeof(struct menuItem));
 		index = (struct menuItem *) malloc(sizeof(struct menuItem));
 	}
+
 	if ((start != NULL) && (save != NULL) && (load != NULL) && (options != NULL) && (leaderboards != NULL) && (leave != NULL) && (index != NULL)) {
 		//Set queue order
 			//START		- is HEAD in queue
@@ -150,7 +154,6 @@ int main() {
 	al_flip_display();
 	bool selection = false;
 
-	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.wav");
 
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source()); //Necessary for getting keyboard input
@@ -178,7 +181,7 @@ int main() {
 					{
 						selection = true; //Makes the selection true 
 					case 1:
-						soundObj.destroySound();
+						//soundObj.destroySound();
 						play(display,background);
 
 						break;

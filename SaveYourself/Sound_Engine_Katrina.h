@@ -5,7 +5,7 @@
 #include <allegro5/allegro_acodec.h>
 #include<string>
 using namespace std;
-class Sound_Engine
+class Sound_Engine_Katrina
 {
 private:
 	struct SAMPLE_DATA
@@ -14,7 +14,7 @@ private:
 		ALLEGRO_SAMPLE_INSTANCE* sample_id;
 	};
 public:
-	Sound_Engine();
+	Sound_Engine_Katrina();
 	SAMPLE_DATA sound;
 	ALLEGRO_DISPLAY *display = NULL;
 	void playSound(ALLEGRO_PLAYMODE Loop, float gain, float pan, float speed, char* type);

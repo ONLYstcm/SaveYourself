@@ -31,7 +31,7 @@ namespace enemies
 
 	void spaceship::render() {//refresh missile bitmap
 		if (visible) {
-			angle = (-particle.getAngle()) + 1.5708;
+			angle = 1.5708 - particle.getAngle();
 			al_draw_rotated_bitmap(spaceshipimage, 20, 16, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction of mouse
 
 		}

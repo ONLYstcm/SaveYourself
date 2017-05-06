@@ -10,7 +10,7 @@
 #include "nukes.h"
 #include "genesis_ai_engine.h"
 #include "staver_collision_engine.h"
-#include "Sound_Engine.h"
+#include "Sound_Engine_Katrina.h"
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
 extern short points=0, lives=3;
@@ -25,6 +25,16 @@ void clear_disp(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background){
 void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	 
 	ALLEGRO_TIMER *timer;
+	//Creating game objects
+	Vector target;
+	const __int8 no_missiles = 1;
+	const __int8 no_spaceships = 3;
+	player::playership playerobj;
+	enemies::missile enemy[no_missiles];
+	enemies::spaceship enemyspaceship[no_spaceships];
+	nukes::nukes bomb;
+	Sound_Engine_Katrina Bullet;
+
 	if (!al_init()) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
 		//return -1;
@@ -81,16 +91,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		
 		srand(time(0)); //Make random function based on actual time
 
-		//Creating game objects
-		Vector target;
-		const __int8 no_missiles = 1;
-		const __int8 no_spaceships = 3;
-		player::playership playerobj;
-		enemies::missile enemy[no_missiles];
-		enemies::spaceship enemyspaceship[no_spaceships];
-		nukes::nukes bomb;
-		Sound_Engine Bullet;
-
+		
 		for (int i = 0; i < no_missiles; i++) {
 			enemy[i].create(AI::random_border_positition().x, AI::random_border_positition().y,6,6,6);
 		}

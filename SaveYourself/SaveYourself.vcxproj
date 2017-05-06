@@ -145,11 +145,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enemies.cpp" />
-    <ClCompile Include="gameplay.cpp" />
     <ClCompile Include="mainMenu.cpp" />
     <ClCompile Include="nukes.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="Sound_Engine.cpp" />
+    <ClCompile Include="Sound_Engine_Katrina.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -162,7 +161,7 @@
     <ClInclude Include="nukes.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="reeko_physics_engine.h" />
-    <ClInclude Include="Sound_Engine.h" />
+    <ClInclude Include="Sound_Engine_Katrina.h" />
     <ClInclude Include="staver_collision_engine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

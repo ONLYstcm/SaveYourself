@@ -21,16 +21,13 @@
     <ClCompile Include="enemies.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gameplay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="nukes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sound_Engine.cpp">
+    <ClCompile Include="Sound_Engine_Katrina.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +59,7 @@
     <ClInclude Include="staver_collision_engine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sound_Engine.h">
+    <ClInclude Include="Sound_Engine_Katrina.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
