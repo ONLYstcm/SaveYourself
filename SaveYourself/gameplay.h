@@ -50,9 +50,11 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	ALLEGRO_KEYBOARD_STATE keyState;
 
 	/* Create the font text */
+	/*
 	ALLEGRO_FONT *points_text; //not yet used
 	ALLEGRO_FONT *lives_text; //not yet used
 	ALLEGRO_FONT *time_text; //not yet used
+	*/
 
 	/* Create the game event queue */
 	ALLEGRO_EVENT_QUEUE *event_queue;
@@ -87,12 +89,13 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		enemies::missile enemy[no_missiles];
 		enemies::spaceship enemyspaceship[no_spaceships];
 		nukes::nukes bomb;
+		Sound_Engine Bullet;
 
 		for (int i = 0; i < no_missiles; i++) {
 			enemy[i].create(AI::random_border_positition().x, AI::random_border_positition().y,6,6,6);
 		}
 		for (int i = 0; i < no_spaceships; i++) {
-			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y,rand() % GAMING_WINDOW_HEIGHT, rand() % GAMING_WINDOW_WIDTH);//Boundary is slight smaller than the size of the image
+			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25);
 		}
 		playerobj.create(20,20);
 
@@ -117,7 +120,6 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			{
 			case ALLEGRO_KEY_SPACE:
 				bomb.shoot(4, 4, playerobj.particle.getVector('P'), target);
-				Sound_Engine Bullet;
 				Bullet.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1,"Bullet.wav");
 				break;
 			}

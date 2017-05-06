@@ -56,4 +56,6 @@ void Sound_Engine::playSound( ALLEGRO_PLAYMODE Loop, float gain, float pan, floa
 }
 void Sound_Engine::destroySound()
 {
+	al_destroy_sample(sound.sample);
+	al_destroy_sample_instance(sound.sample_id);
 }

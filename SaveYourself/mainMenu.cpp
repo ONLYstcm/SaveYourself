@@ -91,7 +91,7 @@ int main() {
 	}
 	if ((start != NULL) && (save != NULL) && (load != NULL) && (options != NULL) && (leaderboards != NULL) && (leave != NULL) && (index != NULL)) {
 		//Set queue order
-			//START		HEAD in queue
+			//START		- is HEAD in queue
 			start->next = save;
 			save->prev = start;
 			start->text = "START";
@@ -144,12 +144,13 @@ int main() {
 		leave->font = item.createMenuText("LEAVE", 475, display, white);
 	}
 	else {
-
+		cout << "Couldn't load Menu Items. No memory left" << endl;
 	}
 
 	al_flip_display();
 	bool selection = false;
-	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP,1,0,1,"Background.wav");
+
+	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.wav");
 
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source()); //Necessary for getting keyboard input

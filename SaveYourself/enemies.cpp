@@ -11,6 +11,7 @@ namespace enemies
 	
 	void missile::create(int x, int y, double boundx, double boundy,short radius) { //This is the 'missile' object itself
 		particle.create(boundx, boundy, radius);
+		//boundx and bouny is slight smaller than the size of the image used (look at dimensions of the actual picture)
 		particle.initialise(x,y);
 		visible = true;
 		render();
@@ -34,6 +35,14 @@ namespace enemies
 			al_draw_rotated_bitmap(spaceshipimage, 20, 16, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction of mouse
 
 		}
+	}
+
+	bool missile::isVisible() {
+		return visible;
+	}
+
+	bool spaceship::isVisible() {
+		return visible;
 	}
 
 	void missile::destroy() {
