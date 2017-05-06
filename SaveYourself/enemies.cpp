@@ -15,9 +15,9 @@ namespace enemies
 		visible = true;
 		render();
 		}
-	void spaceship::create(double boundx, double boundy) { //This is the 'missile' object itself
+	void spaceship::create(int x, int y, double boundx, double boundy) { //This is the 'missile' object itself
 		particle.create(boundx, boundy);
-		particle.initialise(2, 2);
+		particle.initialise(x, y);
 		visible = true;
 		render();
 	}

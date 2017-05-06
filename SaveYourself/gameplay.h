@@ -10,12 +10,13 @@
 #include "nukes.h"
 #include "genesis_ai_engine.h"
 #include "staver_collision_engine.h"
+#include "Sound_Engine.h"
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
 extern short points=0, lives=3;
 
 #define FPS  60
-
+using namespace std;
 void clear_disp(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background){
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_draw_bitmap(background, 0, 0, 0);
@@ -74,7 +75,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		//Creating game objects
 		Vector target;
 		const __int8 no_missiles = 1;
-		const __int8 no_spaceships = 1;
+		const __int8 no_spaceships = 3;
 		player::playership playerobj;
 		enemies::missile enemy[no_missiles];
 		enemies::spaceship enemyspaceship[no_spaceships];
@@ -84,7 +85,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			enemy[i].create(AI::random_border_positition().x, AI::random_border_positition().y,6,6,6);
 		}
 		for (int i = 0; i < no_spaceships; i++) {
-			enemyspaceship[i].create(20,15);//Boundary is slight smaller than the size of the image
+			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y,rand() % GAMING_WINDOW_HEIGHT, rand() % GAMING_WINDOW_WIDTH);//Boundary is slight smaller than the size of the image
 		}
 		playerobj.create(20,20);
 
@@ -109,6 +110,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			{
 			case ALLEGRO_KEY_SPACE:
 				bomb.shoot(4, 4, playerobj.particle.getVector('P'), target);
+				Sound_Engine Bullet;
+				Bullet.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1,"Bullet.wav");
 				break;
 				//bomb.create(4,16,playerobj.particle.getVector('P'),target);
 				//playerobj.particle.getAngle()
