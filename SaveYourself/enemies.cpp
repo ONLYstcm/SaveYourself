@@ -32,8 +32,7 @@ namespace enemies
 	void spaceship::render() {//refresh missile bitmap
 		if (visible) {
 			angle = 1.5708 - particle.getAngle();
-			al_draw_rotated_bitmap(spaceshipimage, 20, 16, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction of mouse
-
+			al_draw_rotated_bitmap(spaceshipimage, 20, 16, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction
 		}
 	}
 
@@ -43,6 +42,14 @@ namespace enemies
 		bullet.setDirection(target);
 		bullet.travel(0, 0, bullet.getVector('U').x, bullet.getVector('U').y);
 		al_draw_filled_circle(bullet.getVector('P').x, bullet.getVector('P').y, 2, al_map_rgb(255, 0, 255));
+	}
+
+	void missile::setVisible(bool value) {
+		visible = value;
+	}
+
+	void spaceship::setVisible(bool value) {
+		visible = value;
 	}
 
 	bool missile::isVisible() {

@@ -12,8 +12,6 @@ namespace nukes
 	void nukes::shoot(double boundx, double boundy, Vector pos, Vector aim)
 	{
 		if (bullets < amo) {
-			//visible = true;
-			//amo++;
 			particle[bullets].create(boundx, boundy);
 			particle[bullets].initialise(pos.x, pos.y);
 			particle[bullets].setDirection(aim);
@@ -22,25 +20,33 @@ namespace nukes
 		}
 	}
 
+	void nukes::fire(double boundx, double boundy, Vector pos, Vector aim) {
+		atom[enemybullets].create(boundx, boundy);
+		atom[enemybullets].initialise(pos.x, pos.y,4,4);
+		atom[enemybullets].setDirection(aim);
+		enemybullets++;
+		enemyrender();
+	}
+
+	void nukes::enemyrender() {//refresh missile bitmap
+		if (visible) {
+			for (int i = 0; i < enemybullets; i++) {
+				atom[i].travel(0, 0, atom[i].getVector('U').x, atom[i].getVector('U').y);
+				al_draw_filled_circle(atom[i].getVector('P').x, atom[i].getVector('P').y, 4, al_map_rgb(255, 0, 255));
+			}
+		}
+	}
+
 	void nukes::render() {//refresh missile bitmap
 		if (visible) {
-			//angle = (-particle.getAngle()) + 1.5708;
-			//particle.move(1, tan(angle1));
 			for (int i = 0; i < bullets; i++) {
 				particle[i].travel(1, 1, particle[i].getVector('U').x, particle[i].getVector('U').y);
 				al_draw_filled_circle(particle[i].getVector('P').x, particle[i].getVector('P').y, 2, al_map_rgb(255, 255, 255));
 			}
-			//al_draw_rotated_bitmap(playershipimage, 0, 0, particle.getVector('P').x, particle.getVector('P').y, angle1, NULL); //Rotate bitmap in direction of mouse
 		}
 	}
 
 	void nukes::destroy() {
 		visible = false;
 	}
-/*
-	void nukes::move(physics::object &shooter)
-	{
-		particle[i].move(1, tan(angle1));
-	}
-	*/
 };
