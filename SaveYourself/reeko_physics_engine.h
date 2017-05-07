@@ -151,7 +151,7 @@ namespace physics {
 			}
 		}
 		
-		void travel(short direction_x, short direction_y, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y = 1, double unit_x = 1, double unit_y = 1) {
+		void travel(double acceleration_x = 1, double acceleration_y = 1, double unit_x = 1, double unit_y = 1) {
 			double vi_x, vi_y;
 			vi_x = vel.x;
 			vel.x += acceleration_x;

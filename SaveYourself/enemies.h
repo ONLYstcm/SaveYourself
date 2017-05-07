@@ -5,6 +5,7 @@
 #include "allegro5/allegro_image.h"
 #include "allegro5/allegro_native_dialog.h"
 #include "allegro5/allegro_primitives.h"
+#include "nukes.h"
 #include <cstdlib>
 #define FPS 60
 
@@ -38,11 +39,14 @@ namespace enemies
 		void create(int x, int y, double boundx, double boundy); //This is the 'missile' object itself
 		void render(); //refresh spaceship
 		void destroy();
+		void shoot(double boundx, double boundy, Vector pos, Vector target);
 		bool isVisible();
 		physics::object particle;
 		ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
 		string identity = "enemy ship";
+
 	private:
+		physics::object bullet;
 		bool visible = true;
 		double dt;
 		double angle;

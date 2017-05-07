@@ -8,18 +8,7 @@
 
 
 namespace nukes
-{/*
-	void nukes::create(double boundx, double boundy, Vector pos, Vector aim,short bullets=2000) { //This is the 'missile' object itself
-		amo = bullets;
-		particle.create(boundx, boundy);
-		particle.initialise(pos.x, pos.y);
-		//double a
-		//angle1 = atan2(particle.getVector('P').y - (aim.y), (aim.x) - particle.getVector('P').x);
-		visible = true;
-		//render();
-	}
-	*/
-
+{
 	void nukes::shoot(double boundx, double boundy, Vector pos, Vector aim)
 	{
 		if (bullets < amo) {
@@ -38,7 +27,7 @@ namespace nukes
 			//angle = (-particle.getAngle()) + 1.5708;
 			//particle.move(1, tan(angle1));
 			for (int i = 0; i < bullets; i++) {
-				particle[i].travel(1, 1, 1, 1, 1, 1, particle[i].getVector('U').x, particle[i].getVector('U').y);
+				particle[i].travel(1, 1, particle[i].getVector('U').x, particle[i].getVector('U').y);
 				al_draw_filled_circle(particle[i].getVector('P').x, particle[i].getVector('P').y, 2, al_map_rgb(255, 255, 255));
 			}
 			//al_draw_rotated_bitmap(playershipimage, 0, 0, particle.getVector('P').x, particle.getVector('P').y, angle1, NULL); //Rotate bitmap in direction of mouse

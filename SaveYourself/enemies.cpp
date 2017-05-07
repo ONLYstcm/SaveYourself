@@ -37,6 +37,14 @@ namespace enemies
 		}
 	}
 
+	void spaceship::shoot(double boundx, double boundy, Vector pos, Vector target) {
+		bullet.create(boundx, boundy);
+		bullet.initialise(pos.x, pos.y);
+		bullet.setDirection(target);
+		bullet.travel(0, 0, bullet.getVector('U').x, bullet.getVector('U').y);
+		al_draw_filled_circle(bullet.getVector('P').x, bullet.getVector('P').y, 2, al_map_rgb(255, 0, 255));
+	}
+
 	bool missile::isVisible() {
 		return visible;
 	}

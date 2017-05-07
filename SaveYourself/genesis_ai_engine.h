@@ -10,8 +10,14 @@
 #define GAMING_WINDOW_HEIGHT 600
 #define GAMING_WINDOW_WIDTH 1024
 #include "reeko_physics_engine.h"
+#include "Sound_Engine_Katrina.h"
+#include "enemies.h"
 
 using namespace std;
+
+Sound_Engine_Katrina explosion; //not yet used
+Sound_Engine_Katrina level_complete; //not yet used
+Sound_Engine_Katrina game_over; //not yet used
 
 namespace AI {
 		Vector random_border_positition() {
@@ -76,28 +82,54 @@ namespace AI {
 			dir.x = cos(object.getAngle());
 			dir.y = sin(object.getAngle());
 			if (dir.x < 0 && dir.y < 0)
-				object.travel(-1,-1,1,1,1,1,abs(dir.x), abs(dir.y));
+				object.travel(1,1,abs(dir.x), abs(dir.y));
 			if (dir.x < 0 && dir.y > 0)
-				object.travel(-1, 1, 1, 1, 1, 1, abs(dir.x), abs(dir.y));
+				object.travel(1, 1, abs(dir.x), abs(dir.y));
 			if (dir.x > 0 && dir.y < 0)
-				object.travel(1, -1, 1, 1, 1, 1, abs(dir.x), abs(dir.y));
+				object.travel(1, 1, abs(dir.x), abs(dir.y));
 			if (dir.x > 0 && dir.y > 0)
-				object.travel(1, 1, 1, 1, 1, 1, abs(dir.x), abs(dir.y));
-
-			/*
-			if (dir.x < 0)
-				object.accelerate('L',1,1,1,1,abs(dir.x), abs(dir.y));
-			else {
-				object.accelerate('R', 1, 1, 1, 1, abs(dir.x), abs(dir.y));
-			}
-			if (dir.y < 0)
-				object.accelerate('D', 1, 1, 1, 1, abs(dir.x), abs(dir.y));
-			else {
-				object.accelerate('U', 1, 1, 1, 1, abs(dir.x), abs(dir.y));
-			}
-			*/
-			
+				object.travel(1, 1, abs(dir.x), abs(dir.y));
 		}
+
+		enemies::missile launchMissile(short level) {
+			enemies::missile enemy;
+				switch (level) //Create object according to the level of the game
+				{
+				case 1:
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.particle.setDirection(AI::random_border_positition());
+					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level*3, level*3);
+					return enemy;
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				default:
+					break;
+				}
+			}
+
+		enemies::spaceship launchSpaceship(short level) {
+			enemies::spaceship spaceship;
+			switch (level) //Create object according to the level of the game
+			{
+			case 1:
+				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25);
+				spaceship.particle.setDirection(AI::random_border_positition());
+				spaceship.particle.initialise(spaceship.particle.getVector('P').x, spaceship.particle.getVector('P').y, level * 3, level * 3);
+				return spaceship;
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			default:
+				break;
+			}
+		}
+
+
 		void rotate(physics::object &object, Vector target, double acceleration = 1) {
 			//Get angle between target and object
 			object.setAngle(atan2(object.getVector('P').y - (target.y), (target.x) - object.getVector('P').x));	//Get angle from missile to mouse icon
@@ -112,8 +144,9 @@ namespace AI {
 		void hit(physics::object objects[], short no_objects, T targets[], short no_targets) {
 			for (int i = 0; i < no_objects; i++) {
 				for (int j = 0; j < no_targets; j++) {
-					if (collision::Collide(objects[i], targets[j].particle)) {
+					if (collision::Collide(objects[i], targets[j].particle)&&targets[j].isVisible()) {
 						if (targets[j].identity == "missile") {
+							explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
 							points=points+5;
 						}
 						else if (targets[j].identity == "enemy ship") {

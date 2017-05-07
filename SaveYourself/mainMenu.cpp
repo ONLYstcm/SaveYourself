@@ -20,6 +20,7 @@ button item;
 int main() {
 
 	Sound_Engine_Katrina soundObj;
+	Sound_Engine_Katrina menu_item;
 	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.ogg");
 
 	ALLEGRO_TIMER *timer;
@@ -163,6 +164,7 @@ int main() {
 		al_wait_for_event(event_queue, &events); //Necessary for getting keyboard input
 			if (events.type == ALLEGRO_EVENT_KEY_DOWN)//Check if key was pressed 
 			{
+				menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "menu_item.ogg");
 				switch (events.keyboard.keycode)
 				{
 				case ALLEGRO_KEY_DOWN:
@@ -181,9 +183,9 @@ int main() {
 					{
 						selection = true; //Makes the selection true 
 					case 1:
-						//soundObj.destroySound();
+						soundObj.destroySound();
+						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
 						play(display,background);
-
 						break;
 					case 2:
 						break;

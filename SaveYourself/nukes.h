@@ -25,7 +25,6 @@ namespace nukes
 		void destroy();
 		physics::object particle[amo];
 		ALLEGRO_BITMAP* playershipimage = al_load_bitmap("nukes.png");
-		void move(physics::object &shooter);
 		double angle1;
 		short bullets=0;
 		string identity="nuke";
