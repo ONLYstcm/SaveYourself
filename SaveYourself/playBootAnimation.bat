@@ -1,1 +1,1 @@
-"C:\Program Files\VideoLAN\VLC\VLC" --play-and-exit --fullscreen "ColdCODES PRESENTS SAVE YOURSELF.mkv"
+"C:\Program Files (x86)\VideoLAN\VLC\VLC" --play-and-exit --fullscreen "ColdCODES PRESENTS SAVE YOURSELF.mkv"

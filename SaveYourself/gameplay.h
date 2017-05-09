@@ -30,19 +30,24 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	ALLEGRO_COLOR orange = al_map_rgb(255, 140, 0);
 	ALLEGRO_COLOR green = al_map_rgb(66, 233, 40);
 	ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
+	ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
+	bool levelChangeFlag = false;
+	bool levelChangeFlag2 = false;
+	bool levelChangeFlag3 = false;
 
 
 	//Creating game objects
 	Vector target;
 	player::playership playerobj;
-	const short no_missiles = 500, no_spaceships = 15;
+	const short no_missiles = 500, no_spaceships = 50;
 	enemies::missile missile[no_missiles];
 	enemies::spaceship enemyspaceship[no_spaceships];
 	nukes::nukes bomb;
 	Sound_Engine_Katrina background_music;
 	background_music.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Sounds from outer space, audio atmosphere.ogg");
-
+	Sound_Engine_Katrina Level_Change;
 	Sound_Engine_Katrina Bullet;
+	Sound_Engine_Katrina Explosion;
 	Sound_Engine_Katrina hurry; //not yet used 
 	Sound_Engine_Katrina incomming_missile; //not yet used
 	Sound_Engine_Katrina laser_shot; //not yet used
@@ -105,13 +110,45 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		
 		srand(time(0)); //Make random function based on actual time
 		
-		for (int i = 0; i < no_spaceships; i++) {
-			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25);
-		}
+		/*for (int i = 0; i < no_spaceships; i++) {
+			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25,spaceshipimage);
+		}*/
 
 		playerobj.create(20,20);
-
+		int countspaceship = 0;
 	while (alive) {
+		if (countspaceship < no_spaceships)
+		{
+			enemyspaceship[countspaceship].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
+			countspaceship++;
+		}
+		if (points >= 25 && levelChangeFlag==false) //the flag was used so that code runs only once
+		{
+			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+			al_rest(1);
+			background = al_load_bitmap("Background_Level2.png");
+			spaceshipimage = al_load_bitmap("EnemyLevel2.png");
+			level = 2;
+			levelChangeFlag = true;
+		}
+		if (points >= 60 && levelChangeFlag2 == false) //the flag was used so that code runs only once
+		{
+			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+			al_rest(1);
+			background = al_load_bitmap("Background_Level3.jpg");
+			spaceshipimage = al_load_bitmap("EnemyLevel3.png");
+			level = 3;
+			levelChangeFlag2 = true;
+		}
+		if (points > 100  && levelChangeFlag3 == false)
+		{
+			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+			al_rest(1);
+
+			//End Credits go here
+			//background = al_load_bitmap("winner.jpg");
+			 levelChangeFlag3 = true;
+		}
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
 		al_get_keyboard_state(&keyState);
@@ -187,15 +224,71 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 
 				for (int i = 0; i < spaceshipPresent; i++) {
 					AI::rotate((enemyspaceship[i].particle), playerobj.particle.getVector('P')); //face the player
-					enemyspaceship[i].render(); //update
+					enemyspaceship[i].render(spaceshipimage); //update
 				}
 					break;
 				case 2:
-					//AI::follow((enemyspaceship[i].particle), playerobj.particle);
+
+					for (int i = 0; i < 10; i++) {
+						AI::follow((missile[i].particle), playerobj.particle);
+						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
+						missile[i].render(); //update
+					}
+					if (enemy_timer > 100) {
+						missile[missilesPresent] = AI::launchMissile(level);
+						enemy_timer = 0;
+						missilesPresent++;
+					}
+
+					if (spaceship_timer > 500) {
+						for (int i = 0; i < spaceshipPresent; i++) {
+							if (enemyspaceship[i].isVisible()) {
+								bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
+							}
+						}
+						if (spaceshipPresent<no_spaceships) {
+							enemyspaceship[spaceshipPresent].setVisible(true);
+							spaceshipPresent++;
+						}
+						spaceship_timer = 0;
+					}
+
+					for (int i = 0; i < 10; i++) {
+						AI::follow((enemyspaceship[i].particle), playerobj.particle);
+						AI::rotate((enemyspaceship[i].particle), playerobj.particle.getVector('P')); //face the player
+						enemyspaceship[i].render(spaceshipimage); //update
+					}
 					break;
 				case 3:
-					//AI::follow((missile[i].particle), playerobj.particle);
-					//AI::follow((enemyspaceship[i].particle), playerobj.particle);
+					
+					
+					for (int i = 0; i < missilesPresent; i++) {
+						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
+						missile[i].render(); //update
+					}
+					if (enemy_timer > 100) {
+						missile[missilesPresent] = AI::launchMissile(level);
+						enemy_timer = 0;
+						missilesPresent++;
+					}
+
+					if (spaceship_timer > 500) {
+						for (int i = 0; i < spaceshipPresent; i++) {
+							if (enemyspaceship[i].isVisible()) {
+								bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
+							}
+						}
+						if (spaceshipPresent<no_spaceships) {
+							enemyspaceship[spaceshipPresent].setVisible(true);
+							spaceshipPresent++;
+						}
+						spaceship_timer = 0;
+					}
+
+					for (int i = 0; i < spaceshipPresent; i++) {
+						AI::rotate((enemyspaceship[i].particle), playerobj.particle.getVector('P')); //face the player
+						enemyspaceship[i].render(spaceshipimage); //update
+					}
 					break;
 				default:
 					break;
@@ -231,27 +324,40 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			AI::hit(bomb.particle, bomb.bullets, missile, no_missiles);
 			AI::hit(bomb.particle, bomb.bullets, enemyspaceship, no_spaceships);
 			for (int i = 0; i < no_missiles; i++) {
-				if (collision::Collide((missile[i].particle), playerobj.particle)&&(missile[i].isVisible())) {
-					playerobj.destroy();
-				}
-			}
-			for (int i = 0; i < no_spaceships; i++) {
-				if (collision::Collide((enemyspaceship[i].particle), playerobj.particle) && (enemyspaceship[i].isVisible())) {
-					playerobj.destroy();
+				if (collision::Collide((missile[i].particle), playerobj.particle) && (missile[i].isVisible())) {
+					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+					al_rest(1);
+					missile[i].destroy();
+					lives--;
 				}
 			}
 
+			for (int i = 0; i < no_spaceships; i++) {
+				if (collision::Collide((enemyspaceship[i].particle), playerobj.particle) && (enemyspaceship[i].isVisible())) {
+					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+					al_rest(1);
+					enemyspaceship[i].destroy();
+					lives--;
+				}
+			}
+			
+			if (lives==0)
+			{
+				playerobj.destroy();
+				//background = al_load_bitmap("Game_Over.jpg");
+				//al_rest(5);
+				alive = false;
+				background_music.destroySound();
+				al_destroy_timer(timer);
+				al_destroy_display(display);
+				al_destroy_event_queue(event_queue);
+			}
 			al_flip_display();
 		}
 	}
 
-	if (true) {
-		al_destroy_timer(timer);
-		al_destroy_display(display);
-		al_destroy_event_queue(event_queue);
-	}
+	
 }
-
 /*
 void setText(ALLEGRO_FONT *text, const char *word, short x_index, short y_index, ALLEGRO_DISPLAY *display, ALLEGRO_COLOR colour) {
 	al_draw_text(text, colour, x_index, y_index, ALLEGRO_ALIGN_RIGHT, word); //Otherwise display the text on the screen

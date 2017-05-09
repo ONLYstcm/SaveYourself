@@ -102,8 +102,16 @@ namespace AI {
 					return enemy;
 					break;
 				case 2:
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.particle.setDirection(AI::random_border_positition());
+					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level , level);
+					return enemy;
 					break;
 				case 3:
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.particle.setDirection(AI::random_border_positition());
+					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level * 3, level * 3);
+					return enemy;
 					break;
 				default:
 					break;
@@ -112,17 +120,27 @@ namespace AI {
 
 		enemies::spaceship launchSpaceship(short level) {
 			enemies::spaceship spaceship;
+			ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
+
 			switch (level) //Create object according to the level of the game
 			{
 			case 1:
-				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25);
+				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
 				spaceship.particle.setDirection(AI::random_border_positition());
 				spaceship.particle.initialise(spaceship.particle.getVector('P').x, spaceship.particle.getVector('P').y, level * 3, level * 3);
 				return spaceship;
 				break;
 			case 2:
+				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
+				spaceship.particle.setDirection(AI::random_border_positition());
+				spaceship.particle.initialise(spaceship.particle.getVector('P').x, spaceship.particle.getVector('P').y, level , level);
+				return spaceship;
 				break;
 			case 3:
+				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
+				spaceship.particle.setDirection(AI::random_border_positition());
+				spaceship.particle.initialise(spaceship.particle.getVector('P').x, spaceship.particle.getVector('P').y, level * 2, level * 2);
+				return spaceship;
 				break;
 			default:
 				break;
@@ -148,9 +166,12 @@ namespace AI {
 						if (targets[j].identity == "missile") {
 							explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
 							points=points+5;
+
 						}
 						else if (targets[j].identity == "enemy ship") {
+							explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
 							points++;
+
 						}
 						targets[j].destroy();
 					}

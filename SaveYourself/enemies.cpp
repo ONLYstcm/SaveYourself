@@ -16,11 +16,11 @@ namespace enemies
 		visible = true;
 		render();
 		}
-	void spaceship::create(int x, int y, double boundx, double boundy) { //This is the 'missile' object itself
+	void spaceship::create(int x, int y, double boundx, double boundy, ALLEGRO_BITMAP* spaceshipimage) { //This is the 'spaceship' object itself
 		particle.create(boundx, boundy);
 		particle.initialise(x, y);
 		visible = true;
-		render();
+		render(spaceshipimage);
 	}
 	void missile::render() {//refresh missile bitmap
 			if (visible) {
@@ -29,13 +29,13 @@ namespace enemies
 			}
 		} 
 
-	void spaceship::render() {//refresh missile bitmap
+	void spaceship::render(ALLEGRO_BITMAP* spaceshipimage) {//refresh missile bitmap
 		if (visible) {
 			angle = 1.5708 - particle.getAngle();
 			al_draw_rotated_bitmap(spaceshipimage, 20, 16, particle.getVector('P').x, particle.getVector('P').y, angle, NULL); //Rotate bitmap in direction
 		}
 	}
-
+	
 	void spaceship::shoot(double boundx, double boundy, Vector pos, Vector target) {
 		bullet.create(boundx, boundy);
 		bullet.initialise(pos.x, pos.y);

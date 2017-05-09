@@ -212,7 +212,7 @@ int main() {
 		al_flip_display();
 	}
 
-	al_rest(30);
+	//al_rest(30);
 	al_destroy_display(display);
 	al_destroy_bitmap(background);
 

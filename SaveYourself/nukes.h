@@ -7,7 +7,7 @@
 #include "allegro5/allegro_primitives.h"
 #include <cstdlib>
 #define FPS 60
-const short amo = 200;
+const short amo = 1000;
 
 
 namespace nukes

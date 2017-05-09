@@ -37,15 +37,15 @@ namespace enemies
 		This class is the class for the spaceship
 		*/
 	public:
-		void create(int x, int y, double boundx, double boundy); //This is the 'missile' object itself
-		void render(); //refresh spaceship
+		string identity = "enemy ship";
+		void create(int x, int y, double boundx, double boundy, ALLEGRO_BITMAP* spaceshipimage); //This is the 'missile' object itself
+		void render(ALLEGRO_BITMAP* spaceshipimage); //refresh spaceship
 		void destroy();
 		void shoot(double boundx, double boundy, Vector pos, Vector target);
 		bool isVisible();
 		void setVisible(bool value);
 		physics::object particle;
-		ALLEGRO_BITMAP* spaceshipimage = al_load_bitmap("enemyship.png");
-		string identity = "enemy ship";
+		
 
 	private:
 		physics::object bullet;
