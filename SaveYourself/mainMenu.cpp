@@ -18,7 +18,7 @@ ALLEGRO_COLOR blue, white;
 button item;
 
 int main() {
-
+	system("playBootAnimation.bat");
 	Sound_Engine_Katrina soundObj;
 	Sound_Engine_Katrina menu_item;
 	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.ogg");
@@ -184,6 +184,7 @@ int main() {
 						selection = true; //Makes the selection true 
 					case 1:
 						soundObj.destroySound();
+						system("playCredits.bat");
 						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
 						play(display,background);
 						break;

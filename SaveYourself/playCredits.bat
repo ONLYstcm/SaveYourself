@@ -1,0 +1,1 @@
+"C:\Program Files\VideoLAN\VLC\VLC" --play-and-exit --fullscreen "Game_Storyline.ogv"
