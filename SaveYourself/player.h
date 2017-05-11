@@ -24,11 +24,36 @@ namespace player
 		physics::object particle;
 		ALLEGRO_BITMAP* playershipimage = al_load_bitmap("playa.png");
 		string identity = "player";
+		int health = 50;
 
 	private:
 		bool visible = true;
 		double dt;
 		double angle;
+	};
+
+	class PowerUps
+
+	{
+	public:
+		void create(int x, int y, double boundx, double boundy, short radius); //This is the 'missile' object itself
+		void render(); //refresh missile
+		void destroy();
+		physics::object particle;
+		ALLEGRO_BITMAP* shieldimage = al_load_bitmap("power up shield(1).png");
+		string identity = "shield";
+		void move();
+		PowerUps();
+		bool visible = true;
+		bool enabled = false;
+
+
+
+	private:
+
+		double dt;
+
+
 	};
 
 }

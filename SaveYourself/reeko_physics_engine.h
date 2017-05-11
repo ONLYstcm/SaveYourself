@@ -11,7 +11,7 @@
 #include <allegro5\allegro_font.h> //Normal font
 #include <allegro5\allegro_ttf.h> //True Type Font
 #define GAMING_WINDOW_HEIGHT 768
-#define GAMING_WINDOW_WIDTH 1360
+#define GAMING_WINDOW_WIDTH 1366
 
 using namespace std;
 
@@ -23,7 +23,7 @@ struct Vector {
 namespace physics {
 	class object {
 	private:
-		Vector vel, accel, pos, unit_vec, forces, empty, bound;
+		Vector vel, accel, pos, unit_vec, forces,empty,bound;
 		ALLEGRO_BITMAP *image = NULL;
 		short radius;
 		double height, length, breadth;
@@ -33,7 +33,7 @@ namespace physics {
 
 	public:
 		//Create new object
-		void create(double boundx, double boundy, short r = 0, short reaction_time = 0, double m = 0, double hei = 0, double len = 0, double bre = 0, double theta = 0) {
+		void create(double boundx, double boundy, short r = 0, short reaction_time = 0, double m = 0, double hei = 0, double len = 0, double bre = 0, double theta =0) {
 			bound.x = boundx;
 			bound.y = boundy;
 			radius = r;
@@ -98,7 +98,7 @@ namespace physics {
 
 
 		//Move object constant acceleration and direction
-		void accelerate(char direction, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y = 1, double unit_x = 1, double unit_y = 1) {
+		void accelerate(char direction, double speed_x = 1, double speed_y = 1, double acceleration_x = 1, double acceleration_y=1, double unit_x=1,double unit_y=1) {
 			double vi;//Initial_velocity
 			switch (direction)
 			{
@@ -110,8 +110,8 @@ namespace physics {
 				pos.y -= ((vi + vel.y) / 2)*unit_y;
 				if (pos.y < 0)
 					pos.y = 0;
-				vel.y = 0;
-				accel.y = 0;
+					vel.y = 0;
+					accel.y = 0;
 				break;
 				//Move down
 			case 'D':
@@ -121,8 +121,8 @@ namespace physics {
 				pos.y += ((vi + vel.y) / 2)*unit_y;
 				if (pos.y > GAMING_WINDOW_HEIGHT)
 					pos.y = GAMING_WINDOW_HEIGHT;
-				vel.y = 0;
-				accel.y = 0;
+					vel.y = 0;
+					accel.y = 0;
 				break;
 				//Move left
 			case 'L':
@@ -132,8 +132,8 @@ namespace physics {
 				pos.x -= ((vi + vel.x) / 2)*unit_x;
 				if (pos.x < 0)
 					pos.x = 0;
-				vel.x = 0;
-				accel.x = 0;
+					vel.x = 0;
+					accel.x = 0;
 				break;
 				//Move right
 			case 'R':
@@ -143,14 +143,14 @@ namespace physics {
 				pos.x += ((vi + vel.x) / 2)*unit_x;
 				if (pos.x > GAMING_WINDOW_WIDTH)
 					pos.x = GAMING_WINDOW_WIDTH;
-				vel.x = 0;
-				accel.x = 0;
+					vel.x = 0;
+					accel.x = 0;
 				break;
 			default:
 				break;
 			}
 		}
-
+		
 		void travel(double acceleration_x = 1, double acceleration_y = 1, double unit_x = 1, double unit_y = 1) {
 			double vi_x, vi_y;
 			vi_x = vel.x;
@@ -239,10 +239,10 @@ namespace physics {
 		}
 
 		void setDirection(Vector target) {
-			angle = (atan2(pos.y - (target.y), (target.x) - pos.x));	//Get angle from missile to mouse icon
-																		//Vector dir;
+			angle=(atan2(pos.y - (target.y), (target.x) - pos.x));	//Get angle from missile to mouse icon
+			//Vector dir;
 
-																		//Convert to unit vector
+			//Convert to unit vector
 			unit_vec.x = cos(angle);
 			unit_vec.y = sin(angle);
 		}

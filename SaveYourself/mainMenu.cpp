@@ -4,7 +4,9 @@
 #include <allegro5\allegro_font.h> //Normal font
 #include <allegro5\allegro_ttf.h> //True Type Font
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <cmath>
 #include "gui_buttons.h"
 #include "enemies.h"
 #include "gameplay.h"
@@ -16,7 +18,24 @@ using namespace std;
 ALLEGRO_COLOR blue, white;
 
 button item;
-
+int savedscore, savedlevel, savedlives;
+void LoadScore() {
+	string line;
+	ifstream file;
+	savedscore = 0;
+	int j = 0;
+	file.open("Save_State.txt");
+	getline(file, line);
+	savedlevel = (line[0] - '0');
+	savedlives = (line[1] - '0');
+	cout << line.length();
+	for (int i = line.length() - 1; i>1; i--)
+	{
+		savedscore += (line[i] - '0')*pow(10, j);
+		j++;
+	}
+	file.close();
+}
 int main() {
 	system("playBootAnimation.bat");
 	Sound_Engine_Katrina soundObj;
@@ -52,19 +71,14 @@ int main() {
 	ALLEGRO_DISPLAY *display = nullptr; //Create 'display' object (The window itself)
 	ALLEGRO_BITMAP *background = nullptr; //Create 'bitmap' object (The image itself)
 
-	ALLEGRO_DISPLAY_MODE   disp_data;
-	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-	al_set_new_display_flags(ALLEGRO_NOFRAME);
-	display = al_create_display(disp_data.width, disp_data.height);// gets maximum supported resolution
-
+	display = al_create_display(GAMING_WINDOW_WIDTH, GAMING_WINDOW_HEIGHT);
 	if (!display) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to create display!\n", NULL, NULL);
 		al_destroy_timer(timer);
 		return -1;
 	}
-
-	al_set_window_position(display, 0, 0);
-	al_set_window_title(display, "SAVE YOURSELF!");
+	al_set_window_position(display, desktopWidth / 2 - GAMING_WINDOW_WIDTH / 2, desktopHeight / 2 - GAMING_WINDOW_HEIGHT / 2);
+	al_set_window_title(display, "Main Menu");
 	
 	/*cout << "Please enter your name?" << endl;
 	string name;
@@ -189,15 +203,23 @@ int main() {
 						selection = true; //Makes the selection true 
 					case 1:
 						soundObj.destroySound();
-						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
 						system("playCredits.bat");
-						//al_destroy_bitmap(background);
-						//background = al_load_bitmap("Background_Level1.jpg");
-						play(display,background);
+						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+						al_destroy_bitmap(background);
+						background = al_load_bitmap("Background_Level1.jpg");
+			
+							play(display, background);
+						
 						break;
 					case 2:
 						break;
 					case 3:
+						LoadScore();
+						soundObj.destroySound();
+						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+						al_destroy_bitmap(background);
+						background = al_load_bitmap("Background_Level1.jpg");
+						play(display, background, savedlevel,savedscore,savedlives);
 						break;
 					case 4:
 						break;
@@ -219,6 +241,7 @@ int main() {
 		al_flip_display();
 	}
 
+	//al_rest(30);
 	al_destroy_display(display);
 	al_destroy_bitmap(background);
 
