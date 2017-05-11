@@ -42,6 +42,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 	//Creating game objects
 	Vector target;
 	player::playership playerobj;
+	player::PowerUps PowerObj;
+	player::PowerUps PowerObj2;
 	const short no_missiles = 100, no_spaceships = 50;
 	enemies::missile missile[no_missiles];
 	enemies::spaceship enemyspaceship[no_spaceships];
@@ -242,10 +244,11 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 				}
 					break;
 				case 2:
-
+					PowerObj.render();
+					PowerObj.move();
 					for (int i = 0; i < 20; i++) {
 						AI::follow((missile[i].particle), playerobj.particle);
-						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
+						missile[i].particle.travel(0.25, 0.25, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
 						missile[i].render(); //update
 					}
 					if (enemy_timer > 100) {
@@ -275,7 +278,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 					break;
 				case 3:
 					
-					
+					PowerObj2.render();
+					PowerObj2.move();
 					for (int i = 0; i < missilesPresent; i++) {
 						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
 						missile[i].render(); //update
@@ -339,22 +343,60 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			AI::hit(bomb.particle, bomb.bullets, enemyspaceship, no_spaceships);
 			for (int i = 0; i < no_missiles; i++) {
 				if (collision::Collide((missile[i].particle), playerobj.particle) && (missile[i].isVisible())) {
-					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
-					al_rest(1);
-					missile[i].destroy();
-					lives--;
+					if (PowerObj.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj.enabled = false;
+						lives++;
+					}
+					else if (PowerObj2.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj2.enabled = false;
+						lives++;
+					}
+					else {
+						Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+						al_rest(1);
+						missile[i].destroy();
+						lives--;
+					}
+
 				}
 			}
 
 			for (int i = 0; i < no_spaceships; i++) {
 				if (collision::Collide((enemyspaceship[i].particle), playerobj.particle) && (enemyspaceship[i].isVisible())) {
-					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
-					al_rest(1);
-					enemyspaceship[i].destroy();
-					lives--;
+					if (PowerObj.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj.enabled = false;
+						enemyspaceship[i].destroy();
+					}
+
+					else if (PowerObj2.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj2.enabled = false;
+						enemyspaceship[i].destroy();
+					}
+					else
+					{
+						Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+						al_rest(1);
+						enemyspaceship[i].destroy();
+						lives--;
+					}
 				}
 			}
-			
+			if (collision::Collide((PowerObj.particle), playerobj.particle)) {
+				PowerObj.enabled = true;
+				PowerObj.destroy();
+				playerobj.playershipimage = al_load_bitmap("playa shield.png");
+
+
+			}
+			if (collision::Collide((PowerObj2.particle), playerobj.particle)) {
+				PowerObj2.enabled = true;
+				PowerObj2.destroy();
+				playerobj.playershipimage = al_load_bitmap("playa shield.png");
+			}
 			if (lives==0)
 			{
 				playerobj.destroy();

@@ -7,7 +7,7 @@
 #include <cstdlib>
 
 namespace player
-{	
+{
 	void playership::create(double boundx, double boundy) { //This is the 'missile' object itself
 		particle.create(boundx, boundy);
 		particle.initialise(300, 300);
@@ -24,5 +24,33 @@ namespace player
 
 	void playership::destroy() {
 		visible = false;
+	}
+
+	PowerUps::PowerUps()
+	{
+		particle.initialise(300, 0);
+	}
+
+	void PowerUps::create(int x, int y, double boundx, double boundy, short radius) { //This is the 'missile' object itself
+		particle.create(boundx, boundy, radius);
+		particle.initialise(x, y);
+		visible = true;
+		render();
+	}
+
+	void PowerUps::render() {//refresh missile bitmap
+		if (visible) {
+			al_draw_bitmap(shieldimage, particle.getVector('P').x, particle.getVector('P').y, NULL); //Draw black circle
+		}
+	}
+
+	void PowerUps::move() {
+		particle.move('s', 0, 1);
+		if (particle.getVector('P').y > GAMING_WINDOW_HEIGHT)
+			visible = false;
+	}
+	void PowerUps::destroy() {
+		visible = false;
+
 	}
 };
