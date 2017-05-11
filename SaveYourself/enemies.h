@@ -45,10 +45,9 @@ namespace enemies
 		bool isVisible();
 		void setVisible(bool value);
 		physics::object particle;
-		
+		physics::object bullet;
 
 	private:
-		physics::object bullet;
 		bool visible = false;
 		double dt;
 		double angle;

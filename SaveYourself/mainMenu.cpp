@@ -52,14 +52,19 @@ int main() {
 	ALLEGRO_DISPLAY *display = nullptr; //Create 'display' object (The window itself)
 	ALLEGRO_BITMAP *background = nullptr; //Create 'bitmap' object (The image itself)
 
-	display = al_create_display(GAMING_WINDOW_WIDTH, GAMING_WINDOW_HEIGHT);
+	ALLEGRO_DISPLAY_MODE   disp_data;
+	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+	al_set_new_display_flags(ALLEGRO_NOFRAME);
+	display = al_create_display(disp_data.width, disp_data.height);// gets maximum supported resolution
+
 	if (!display) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to create display!\n", NULL, NULL);
 		al_destroy_timer(timer);
 		return -1;
 	}
-	al_set_window_position(display, desktopWidth / 2 - GAMING_WINDOW_WIDTH / 2, desktopHeight / 2 - GAMING_WINDOW_HEIGHT / 2);
-	al_set_window_title(display, "Main Menu");
+
+	al_set_window_position(display, 0, 0);
+	al_set_window_title(display, "SAVE YOURSELF!");
 	
 	/*cout << "Please enter your name?" << endl;
 	string name;
@@ -184,11 +189,10 @@ int main() {
 						selection = true; //Makes the selection true 
 					case 1:
 						soundObj.destroySound();
-						system("playCredits.bat");
 						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
-						al_destroy_bitmap(background);
-						background = al_load_bitmap("Background_Level1.jpg");
-
+						system("playCredits.bat");
+						//al_destroy_bitmap(background);
+						//background = al_load_bitmap("Background_Level1.jpg");
 						play(display,background);
 						break;
 					case 2:
@@ -215,7 +219,6 @@ int main() {
 		al_flip_display();
 	}
 
-	//al_rest(30);
 	al_destroy_display(display);
 	al_destroy_bitmap(background);
 
