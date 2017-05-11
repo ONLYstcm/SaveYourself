@@ -68,7 +68,7 @@ int main() {
 
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //Make window black
 
-	background = al_load_bitmap("seamless space_0.PNG");
+	background = al_load_bitmap("Main_Menu.jpg");
 	al_draw_bitmap(background, 0, 0, 0);
 
 	blue = al_map_rgb(0, 222,255);
@@ -100,7 +100,7 @@ int main() {
 			start->next = save;
 			save->prev = start;
 			start->text = "START";
-			start->height = 100;
+			start->height = 200;
 			start->number = 1;
 
 			//SAVE
@@ -141,12 +141,12 @@ int main() {
 			index = start;
 
 		//Initial menu item properties (position & colour)
-		start->font = item.createMenuText("START", 100, display, blue);
-		save->font = item.createMenuText("SAVE", 175, display, white);
-		load->font = item.createMenuText("LOAD", 250, display, white);
-		options->font = item.createMenuText("OPTIONS", 325, display, white);
-		leaderboards->font = item.createMenuText("LEADERBOARDS", 400, display, white);
-		leave->font = item.createMenuText("LEAVE", 475, display, white);
+		start->font = item.createMenuText("START", 200, display, blue);
+		save->font = item.createMenuText("SAVE", 275, display, white);
+		load->font = item.createMenuText("LOAD", 350, display, white);
+		options->font = item.createMenuText("OPTIONS", 425, display, white);
+		leaderboards->font = item.createMenuText("LEADERBOARDS", 500, display, white);
+		leave->font = item.createMenuText("LEAVE", 575, display, white);
 	}
 	else {
 		cout << "Couldn't load Menu Items. No memory left" << endl;
@@ -186,6 +186,9 @@ int main() {
 						soundObj.destroySound();
 						system("playCredits.bat");
 						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+						al_destroy_bitmap(background);
+						background = al_load_bitmap("Background_Level1.jpg");
+
 						play(display,background);
 						break;
 					case 2:
