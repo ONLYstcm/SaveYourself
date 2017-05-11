@@ -4,7 +4,9 @@
 #include <allegro5\allegro_font.h> //Normal font
 #include <allegro5\allegro_ttf.h> //True Type Font
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <cmath>
 #include "gui_buttons.h"
 #include "enemies.h"
 #include "gameplay.h"
@@ -16,7 +18,24 @@ using namespace std;
 ALLEGRO_COLOR blue, white;
 
 button item;
-
+int savedscore, savedlevel, savedlives;
+void LoadScore() {
+	string line;
+	ifstream file;
+	savedscore = 0;
+	int j = 0;
+	file.open("Save_State.txt");
+	getline(file, line);
+	savedlevel = (line[0] - '0');
+	savedlives = (line[1] - '0');
+	cout << line.length();
+	for (int i = line.length() - 1; i>1; i--)
+	{
+		savedscore += (line[i] - '0')*pow(10, j);
+		j++;
+	}
+	file.close();
+}
 int main() {
 	system("playBootAnimation.bat");
 	Sound_Engine_Katrina soundObj;
@@ -188,12 +207,19 @@ int main() {
 						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
 						al_destroy_bitmap(background);
 						background = al_load_bitmap("Background_Level1.jpg");
-
-						play(display,background);
+			
+							play(display, background);
+						
 						break;
 					case 2:
 						break;
 					case 3:
+						LoadScore();
+						soundObj.destroySound();
+						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+						al_destroy_bitmap(background);
+						background = al_load_bitmap("Background_Level1.jpg");
+						play(display, background, savedlevel,savedscore,savedlives);
 						break;
 					case 4:
 						break;

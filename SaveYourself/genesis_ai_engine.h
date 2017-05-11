@@ -7,8 +7,8 @@
 #include <string>
 #include <ctime>
 #include "gameplay.h"
-#define GAMING_WINDOW_HEIGHT 600
-#define GAMING_WINDOW_WIDTH 1024
+#define GAMING_WINDOW_HEIGHT 768
+#define GAMING_WINDOW_WIDTH 1366
 #include "reeko_physics_engine.h"
 #include "Sound_Engine_Katrina.h"
 #include "enemies.h"

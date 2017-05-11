@@ -3,6 +3,7 @@
 #include <allegro5\color.h>
 #include <allegro5\allegro_image.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "gui_buttons.h"
 #include "enemies.h"
@@ -22,8 +23,10 @@ void clear_disp(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background){
 	al_draw_bitmap(background, 0, 0, 0);
 }
 
-void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
-	 
+void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1, int loadscore=0, int loadlives=3) {
+	level = loadlevel;
+	points = loadscore;
+	lives = loadlives;
 	ALLEGRO_TIMER *timer;
 	ALLEGRO_COLOR blue = al_map_rgb(0, 222, 255);
 	ALLEGRO_COLOR white = al_map_rgb(255, 255, 255); 
@@ -34,12 +37,12 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 	bool levelChangeFlag = false;
 	bool levelChangeFlag2 = false;
 	bool levelChangeFlag3 = false;
-
+	bool loadstate = false;
 
 	//Creating game objects
 	Vector target;
 	player::playership playerobj;
-	const short no_missiles = 500, no_spaceships = 50;
+	const short no_missiles = 100, no_spaceships = 50;
 	enemies::missile missile[no_missiles];
 	enemies::spaceship enemyspaceship[no_spaceships];
 	nukes::nukes bomb;
@@ -122,7 +125,11 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			enemyspaceship[countspaceship].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
 			countspaceship++;
 		}
-		if (points >= 25 && levelChangeFlag==false) //the flag was used so that code runs only once
+		
+		ALLEGRO_EVENT events;
+		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
+		al_get_keyboard_state(&keyState);
+		if ((points >= 25 && levelChangeFlag == false) || (loadstate == true && loadlevel == 2))//the flag was used so that code runs only once
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -132,7 +139,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			level = 2;
 			levelChangeFlag = true;
 		}
-		if (points >= 60 && levelChangeFlag2 == false) //the flag was used so that code runs only once
+		if ((points >= 100 && levelChangeFlag2 == false) ||(loadstate==true && loadlevel==3))//the flag was used so that code runs only once
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -142,18 +149,23 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			level = 3;
 			levelChangeFlag2 = true;
 		}
-		if (points > 100  && levelChangeFlag3 == false)
+		if (points >= 150 && levelChangeFlag3 == false && loadstate==false)
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
 			//End Credits go here
 			//background = al_load_bitmap("winner.jpg");
-			 levelChangeFlag3 = true;
+			levelChangeFlag3 = true;
 		}
-		ALLEGRO_EVENT events;
-		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
-		al_get_keyboard_state(&keyState);
-		
+		if (al_key_down(&keyState, ALLEGRO_KEY_1))// Saves Game
+		{
+		ofstream outfile;
+			outfile.open("Save_State.txt");	
+			outfile << level <<lives << points;
+			outfile.close();
+
+
+		}
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)|| al_key_down(&keyState, ALLEGRO_KEY_S))
 			playerobj.particle.move('d');
 		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) || al_key_down(&keyState, ALLEGRO_KEY_A))
@@ -231,7 +243,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 					break;
 				case 2:
 
-					for (int i = 0; i < 10; i++) {
+					for (int i = 0; i < 20; i++) {
 						AI::follow((missile[i].particle), playerobj.particle);
 						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
 						missile[i].render(); //update

@@ -10,8 +10,8 @@
 #include <allegro5\allegro_image.h>
 #include <allegro5\allegro_font.h> //Normal font
 #include <allegro5\allegro_ttf.h> //True Type Font
-#define GAMING_WINDOW_HEIGHT 600
-#define GAMING_WINDOW_WIDTH 1024
+#define GAMING_WINDOW_HEIGHT 768
+#define GAMING_WINDOW_WIDTH 1366
 #include "reeko_physics_engine.h"
 
 using namespace std;
