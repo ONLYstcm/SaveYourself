@@ -11,8 +11,8 @@
 #include "genesis_ai_engine.h"
 #include "staver_collision_engine.h"
 #include "Sound_Engine_Katrina.h"
-#define GAMING_WINDOW_HEIGHT 600
-#define GAMING_WINDOW_WIDTH 1024
+#define GAMING_WINDOW_HEIGHT 768
+#define GAMING_WINDOW_WIDTH 1366
 extern short points = 0, lives = 3, level = 1, enemy_timer = 0, spaceship_timer=0, missilesPresent = 0, spaceshipPresent = 0, time_left=120, stopwatch=0;
 
 #define FPS  60
@@ -126,7 +126,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
-			background = al_load_bitmap("Background_Level2.png");
+			al_destroy_bitmap(background);
+			background = al_load_bitmap("Background_Level2.jpg");
 			spaceshipimage = al_load_bitmap("EnemyLevel2.png");
 			level = 2;
 			levelChangeFlag = true;
@@ -135,6 +136,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
+			al_destroy_bitmap(background);
 			background = al_load_bitmap("Background_Level3.jpg");
 			spaceshipimage = al_load_bitmap("EnemyLevel3.png");
 			level = 3;
@@ -144,7 +146,6 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
-
 			//End Credits go here
 			//background = al_load_bitmap("winner.jpg");
 			 levelChangeFlag3 = true;
@@ -152,7 +153,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
 		al_get_keyboard_state(&keyState);
-
+		
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)|| al_key_down(&keyState, ALLEGRO_KEY_S))
 			playerobj.particle.move('d');
 		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) || al_key_down(&keyState, ALLEGRO_KEY_A))
@@ -161,7 +162,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 			playerobj.particle.move('r');
 		if (al_key_down(&keyState, ALLEGRO_KEY_UP) || al_key_down(&keyState, ALLEGRO_KEY_W))
 			playerobj.particle.move('u');
-
+		if (al_key_down(&keyState, ALLEGRO_KEY_ESCAPE))
+			exit(0);
 		if (events.type == ALLEGRO_EVENT_KEY_DOWN)//Check if key was pressed 
 		{
 			switch (events.keyboard.keycode)
@@ -351,6 +353,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background) {
 				al_destroy_timer(timer);
 				al_destroy_display(display);
 				al_destroy_event_queue(event_queue);
+				exit(0);
+
 			}
 			al_flip_display();
 		}
