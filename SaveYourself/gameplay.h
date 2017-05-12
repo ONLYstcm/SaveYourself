@@ -154,10 +154,13 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 		if (points >= 150 && levelChangeFlag3 == false && loadstate==false)
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
-			al_rest(1);
 			//End Credits go here
-			//background = al_load_bitmap("winner.jpg");
+			clear_disp(display, background);
+			background = al_load_bitmap("winner.jpg");
+			al_flip_display();
+			al_rest(10);
 			levelChangeFlag3 = true;
+			exit(0);
 		}
 
 		if (al_key_down(&keyState, ALLEGRO_KEY_1))// Saves Game
@@ -317,12 +320,12 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			playerobj.render(); //update
 			bomb.render();
 			bomb.enemyrender();
-			al_draw_text(text, orange, 900, 20, ALLEGRO_ALIGN_LEFT, "Points: ");
-			al_draw_text(text, orange, 950, 20, ALLEGRO_ALIGN_INTEGER, (to_string(points).c_str()));
-			al_draw_text(text, green, 900, 40, ALLEGRO_ALIGN_LEFT, "Lives: ");
-			al_draw_text(text, green, 950, 40, ALLEGRO_ALIGN_INTEGER, (to_string(lives).c_str()));
-			al_draw_text(text, blue, 900, 60, ALLEGRO_ALIGN_LEFT, "Level: ");
-			al_draw_text(text, blue, 950, 60, ALLEGRO_ALIGN_INTEGER, (to_string(level).c_str()));
+			al_draw_text(text, orange, 1250, 20, ALLEGRO_ALIGN_LEFT, "Points: ");
+			al_draw_text(text, orange, 1300, 20, ALLEGRO_ALIGN_INTEGER, (to_string(points).c_str()));
+			al_draw_text(text, green, 1250, 40, ALLEGRO_ALIGN_LEFT, "Lives: ");
+			al_draw_text(text, green, 1300, 40, ALLEGRO_ALIGN_INTEGER, (to_string(lives).c_str()));
+			al_draw_text(text, blue, 1250, 60, ALLEGRO_ALIGN_LEFT, "Level: ");
+			al_draw_text(text, blue, 1300, 60, ALLEGRO_ALIGN_INTEGER, (to_string(level).c_str()));
 			if (stopwatch > 500) {
 				time_left--;
 				if (time_left <= 15) {
@@ -331,12 +334,12 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 				stopwatch = 0;
 			}
 			if (time_left <= 15) {
-				al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
-				al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
+				al_draw_text(text, white, 1250, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
+				al_draw_text(text, white, 1300, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
 			}
 			else{
-			al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
-			al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
+			al_draw_text(text, white, 1250, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
+			al_draw_text(text, white, 1300, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
 			}
 
 			//Check collisions - If anyone has been hit
