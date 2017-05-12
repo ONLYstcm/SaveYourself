@@ -54,7 +54,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 	Sound_Engine_Katrina Explosion;
 	Sound_Engine_Katrina hurry; //not yet used 
 	Sound_Engine_Katrina incomming_missile; //not yet used
-	Sound_Engine_Katrina laser_shot; //not yet used
+	Sound_Engine_Katrina EndGameSound; 
 
 	if (!al_init()) {
 		al_show_native_message_box(NULL, NULL, NULL, "Failed to initialise Allegro 5!\n", NULL, NULL);
@@ -189,6 +189,9 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			background = al_load_bitmap("EndCredits.jpg");
 			levelChangeFlag3 = true;
 			endgame = true;
+			background_music.destroySound();
+
+			EndGameSound.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "EndGame.ogg");
 
 		}
 
@@ -310,7 +313,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 					}
 					break;
 				case 3:
-					//
+					
 					PowerObj2.render();
 					PowerObj2.move();
 					for (int i = 0; i < missilesPresent; i++) {
