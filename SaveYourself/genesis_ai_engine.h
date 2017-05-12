@@ -173,6 +173,18 @@ namespace AI {
 			}
 		}
 
+		template <class T>
+		//Function checks if one target has been by other objects - Used to see if player has been hit by enemy bullet
+		bool a(physics::object object[], short no_objects, T &target) {
+			for (int i = 0; i < no_objects; i++) {
+				if (collision::Collide(object[i], target.particle)) {
+					lives--;
+					object[i].initialise(-6, -6, 0, 0, 0, 0, 0, 0);
+					break;
+					return true;
+				}
+			}
+		}
 
 		template <class T>
 		//Function checks if several targets has been by other objects - Used to see if enemies has been hit by player bullet
