@@ -61,9 +61,11 @@ namespace enemies
 	}
 
 	void missile::destroy() {
+		particle.initialise(0, 0, 0, 0, 0, 0, 0, 0); //Place object in corner and keep it there
 		visible = false;
 		}
 	void spaceship::destroy() {
+		particle.initialise(0,0,0,0,0,0,0,0); //Place object in corner and keep it there
 		visible = false;
 	}
 

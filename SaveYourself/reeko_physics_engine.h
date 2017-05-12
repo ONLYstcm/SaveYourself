@@ -23,7 +23,7 @@ struct Vector {
 namespace physics {
 	class object {
 	private:
-		Vector vel, accel, pos, unit_vec, forces,empty,bound;
+		Vector vel, accel, pos, unit_vec, forces, empty, bound;
 		ALLEGRO_BITMAP *image = NULL;
 		short radius;
 		double height, length, breadth;
@@ -282,14 +282,3 @@ namespace physics {
 		}
 	};
 }
-
-
-
-
-/*Vector pullFromUser = arrow.head - arrow.tail;
-pullFromUser.trim(1);
-ball.particle.addForce(pullFromUser);
-ball.particle.integrate(dt);
-ball.particle.clearResultant();*/
-
-//float old_angle=0;

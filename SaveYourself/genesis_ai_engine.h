@@ -13,8 +13,6 @@
 #include "Sound_Engine_Katrina.h"
 #include "enemies.h"
 
-using namespace std;
-
 Sound_Engine_Katrina explosion; //not yet used
 Sound_Engine_Katrina level_complete; //not yet used
 Sound_Engine_Katrina game_over; //not yet used
@@ -58,6 +56,7 @@ namespace AI {
 			//Get angle between target and object
 			object.setAngle(atan2(object.getVector('P').y - (target.getVector('P').y), (target.getVector('P').x)-object.getVector('P').x));	//Get angle from missile to mouse icon
 			Vector dir;
+
 			//Convert to unit vector
 			dir.x = cos(object.getAngle());
 			dir.y = sin(object.getAngle());
@@ -95,20 +94,21 @@ namespace AI {
 			enemies::missile enemy;
 				switch (level) //Create object according to the level of the game
 				{
+					enemy.setVisible(true);
 				case 1:
-					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 7, 7, 6);
 					enemy.particle.setDirection(AI::random_border_positition());
 					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level*3, level*3);
 					return enemy;
 					break;
 				case 2:
-					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 7, 7, 6);
 					enemy.particle.setDirection(AI::random_border_positition());
 					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level , level);
 					return enemy;
 					break;
 				case 3:
-					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 6, 6, 6);
+					enemy.create(AI::random_border_positition().x, AI::random_border_positition().y, 7, 7, 6);
 					enemy.particle.setDirection(AI::random_border_positition());
 					enemy.particle.initialise(enemy.particle.getVector('P').x, enemy.particle.getVector('P').y, level * 3, level * 3);
 					return enemy;
@@ -124,6 +124,7 @@ namespace AI {
 
 			switch (level) //Create object according to the level of the game
 			{
+				spaceship.setVisible(true);
 			case 1:
 				spaceship.create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
 				spaceship.particle.setDirection(AI::random_border_positition());
@@ -158,14 +159,30 @@ namespace AI {
 			dir.y = sin(object.getAngle());
 		}
 
+
+		
 		template <class T>
+		//Function checks if one target has been by other objects - Used to see if player has been hit by enemy bullet
+		void playerhit(physics::object object[], short no_objects, T &target) {
+			for (int i = 0; i < no_objects; i++) {
+				if (collision::Collide(object[i], target.particle)) {
+					lives--;
+					object[i].initialise(-6, -6, 0, 0, 0, 0, 0, 0);
+					break;
+				}
+			}
+		}
+
+
+		template <class T>
+		//Function checks if several targets has been by other objects - Used to see if enemies has been hit by player bullet
 		void hit(physics::object objects[], short no_objects, T targets[], short no_targets) {
 			for (int i = 0; i < no_objects; i++) {
 				for (int j = 0; j < no_targets; j++) {
-					if (collision::Collide(objects[i], targets[j].particle)&&targets[j].isVisible()) {
+					if (collision::Collide(objects[i], targets[j].particle) && targets[j].isVisible()) {
 						if (targets[j].identity == "missile") {
 							explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
-							points=points+5;
+							points = points + 5;
 
 						}
 						else if (targets[j].identity == "enemy ship") {
@@ -178,6 +195,4 @@ namespace AI {
 				}
 			}
 		}
-
-		
 }

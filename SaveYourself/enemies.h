@@ -48,7 +48,7 @@ namespace enemies
 		physics::object bullet;
 
 	private:
-		bool visible = false;
+		bool visible = true;
 		double dt;
 		double angle;
 	};

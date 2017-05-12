@@ -12,8 +12,8 @@
 #include "genesis_ai_engine.h"
 #include "staver_collision_engine.h"
 #include "Sound_Engine_Katrina.h"
-#define GAMING_WINDOW_HEIGHT 768;
-#define GAMING_WINDOW_WIDTH 1360;
+#define GAMING_WINDOW_HEIGHT 768
+#define GAMING_WINDOW_WIDTH 1366
 extern short points = 0, lives = 3, level = 1, enemy_timer = 0, spaceship_timer=0, missilesPresent = 0, spaceshipPresent = 0, time_left=120, stopwatch=0;
 
 #define FPS  60
@@ -114,6 +114,10 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 		bool draw = false; 
 		
 		srand(time(0)); //Make random function based on actual time
+		
+		/*for (int i = 0; i < no_spaceships; i++) {
+			enemyspaceship[i].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25,spaceshipimage);
+		}*/
 
 		playerobj.create(20,20);
 		int countspaceship = 0;
@@ -123,7 +127,11 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			enemyspaceship[countspaceship].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
 			countspaceship++;
 		}
-		if (points >= 25 && levelChangeFlag==false) //the flag was used so that code runs only once
+		
+		ALLEGRO_EVENT events;
+		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
+		al_get_keyboard_state(&keyState);
+		if ((points >= 25 && levelChangeFlag == false) || (loadstate == true && loadlevel == 2))//the flag was used so that code runs only once
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -133,7 +141,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			level = 2;
 			levelChangeFlag = true;
 		}
-		if (points >= 60 && levelChangeFlag2 == false) //the flag was used so that code runs only once
+		if ((points >= 100 && levelChangeFlag2 == false) ||(loadstate==true && loadlevel==3))//the flag was used so that code runs only once
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -143,18 +151,24 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			level = 3;
 			levelChangeFlag2 = true;
 		}
-		if (points > 100  && levelChangeFlag3 == false)
+		if (points >= 150 && levelChangeFlag3 == false && loadstate==false)
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
 			//End Credits go here
 			//background = al_load_bitmap("winner.jpg");
-			 levelChangeFlag3 = true;
+			levelChangeFlag3 = true;
 		}
-		ALLEGRO_EVENT events;
-		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
-		al_get_keyboard_state(&keyState);
-		
+
+		if (al_key_down(&keyState, ALLEGRO_KEY_1))// Saves Game
+		{
+		ofstream outfile;
+			outfile.open("Save_State.txt");	
+			outfile << level <<lives << points;
+			outfile.close();
+
+
+		}
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)|| al_key_down(&keyState, ALLEGRO_KEY_S))
 			playerobj.particle.move('d');
 		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) || al_key_down(&keyState, ALLEGRO_KEY_A))
@@ -177,57 +191,59 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 		}
 
 
-			if (events.type == ALLEGRO_EVENT_TIMER) {
-				draw = true;
+		if (events.type == ALLEGRO_EVENT_TIMER) {
+			draw = true;
 			}
+		
+		else if (events.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			alive = false;
+			break;
+		}
 
-			else if (events.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-				alive = false;
-				break;
-			}
+		if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
+			target.x = events.mouse.x;
+			target.y = events.mouse.y;
+			AI::rotate((playerobj.particle), target);
+		}
+		
+		enemy_timer++;
+		spaceship_timer++;
+		stopwatch++;
+		if (draw && al_is_event_queue_empty(event_queue)) {
+			draw = false;
+			clear_disp(display, background);
 
-			if (events.type == ALLEGRO_EVENT_MOUSE_AXES) {
-				target.x = events.mouse.x;
-				target.y = events.mouse.y;
-				AI::rotate((playerobj.particle), target);
-			}
+			switch (level)	//This switch statement determines how the enemies attack in the level
+			{
+			case 1:
+				for (int i = 0; i < missilesPresent; i++) {
+					missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
+					missile[i].render(); //update
+				}
+				if (enemy_timer > 100) {
+					missile[missilesPresent] = AI::launchMissile(level);
+					enemy_timer = 0;
+					missilesPresent++;
+				}
 
-			enemy_timer++;
-			spaceship_timer++;
-			stopwatch++;
-			if (draw && al_is_event_queue_empty(event_queue)) {
-				draw = false;
-				clear_disp(display, background);
-
-				switch (level)	//This switch statement determines how the enemies attack in the level
-				{
-				case 1:
-					for (int i = 0; i < missilesPresent; i++) {
-						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
-						missile[i].render(); //update
+				if (spaceship_timer > 500) {
+					for (int i = 0; i < spaceshipPresent; i++) {
+						if(enemyspaceship[i].isVisible()){
+							bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
+						}
 					}
-					if (enemy_timer > 100) {
-						missile[missilesPresent] = AI::launchMissile(level);
-						enemy_timer = 0;
-						missilesPresent++;
+					if (spaceshipPresent<no_spaceships){
+					enemyspaceship[spaceshipPresent].setVisible(true);
+					spaceshipPresent++;
 					}
+					spaceship_timer = 0;
+				}
 
-					if (spaceship_timer > 500) {
-						for (int i = 0; i < spaceshipPresent; i++) {
-							if (enemyspaceship[i].isVisible()) {
-								bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
-							}
-						}
-						if (spaceshipPresent < no_spaceships) {
-							enemyspaceship[spaceshipPresent].create(AI::random_border_positition().x, AI::random_border_positition().y, 25, 25, spaceshipimage);
-							spaceship_timer = 0;
-						}
-
-						for (int i = 0; i < spaceshipPresent; i++) {
-							AI::rotate((enemyspaceship[i].particle), playerobj.particle.getVector('P')); //face the player
-							enemyspaceship[i].render(spaceshipimage); //update
-						}
-						break;
+				for (int i = 0; i < spaceshipPresent; i++) {
+					AI::rotate((enemyspaceship[i].particle), playerobj.particle.getVector('P')); //face the player
+					enemyspaceship[i].render(spaceshipimage); //update
+				}
+					break;
 				case 2:
 					PowerObj.render();
 					PowerObj.move();
@@ -248,7 +264,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 								bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
 							}
 						}
-						if (spaceshipPresent < no_spaceships) {
+						if (spaceshipPresent<no_spaceships) {
 							enemyspaceship[spaceshipPresent].setVisible(true);
 							spaceshipPresent++;
 						}
@@ -263,7 +279,8 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 					break;
 				case 3:
 					
-					
+					PowerObj2.render();
+					PowerObj2.move();
 					for (int i = 0; i < missilesPresent; i++) {
 						missile[i].particle.travel(0, 0, missile[i].particle.getVector('U').x, missile[i].particle.getVector('U').y); //update
 						missile[i].render(); //update
@@ -280,7 +297,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 								bomb.fire(4, 4, enemyspaceship[i].particle.getVector('P'), playerobj.particle.getVector('P'));
 							}
 						}
-						if (spaceshipPresent < no_spaceships) {
+						if (spaceshipPresent<no_spaceships) {
 							enemyspaceship[spaceshipPresent].setVisible(true);
 							spaceshipPresent++;
 						}
@@ -294,55 +311,96 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 					break;
 				default:
 					break;
-					}
+				}
 
 
-					playerobj.render(); //update
-					bomb.render();
-					bomb.enemyrender();
-					al_draw_text(text, orange, 900, 20, ALLEGRO_ALIGN_LEFT, "Points: ");
-					al_draw_text(text, orange, 950, 20, ALLEGRO_ALIGN_INTEGER, (to_string(points).c_str()));
-					al_draw_text(text, green, 900, 40, ALLEGRO_ALIGN_LEFT, "Lives: ");
-					al_draw_text(text, green, 950, 40, ALLEGRO_ALIGN_INTEGER, (to_string(lives).c_str()));
-					al_draw_text(text, blue, 900, 60, ALLEGRO_ALIGN_LEFT, "Level: ");
-					al_draw_text(text, blue, 950, 60, ALLEGRO_ALIGN_INTEGER, (to_string(level).c_str()));
-					if (stopwatch > 500) {
-						time_left--;
-						if (time_left <= 15) {
-							hurry.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
-						}
-						stopwatch = 0;
-					}
-					if (time_left <= 15) {
-						al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
-						al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
-					}
-					else {
-						al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
-						al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
-					}
+			playerobj.render(); //update
+			bomb.render();
+			bomb.enemyrender();
+			al_draw_text(text, orange, 900, 20, ALLEGRO_ALIGN_LEFT, "Points: ");
+			al_draw_text(text, orange, 950, 20, ALLEGRO_ALIGN_INTEGER, (to_string(points).c_str()));
+			al_draw_text(text, green, 900, 40, ALLEGRO_ALIGN_LEFT, "Lives: ");
+			al_draw_text(text, green, 950, 40, ALLEGRO_ALIGN_INTEGER, (to_string(lives).c_str()));
+			al_draw_text(text, blue, 900, 60, ALLEGRO_ALIGN_LEFT, "Level: ");
+			al_draw_text(text, blue, 950, 60, ALLEGRO_ALIGN_INTEGER, (to_string(level).c_str()));
+			if (stopwatch > 500) {
+				time_left--;
+				if (time_left <= 15) {
+					hurry.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+				}
+				stopwatch = 0;
+			}
+			if (time_left <= 15) {
+				al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
+				al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
+			}
+			else{
+			al_draw_text(text, white, 900, 80, ALLEGRO_ALIGN_LEFT, "Time: ");
+			al_draw_text(text, white, 950, 80, ALLEGRO_ALIGN_INTEGER, (to_string(time_left).c_str()));
+			}
 
 			//Check collisions - If anyone has been hit
 			AI::hit(bomb.particle, bomb.bullets, missile, no_missiles);
 			AI::hit(bomb.particle, bomb.bullets, enemyspaceship, no_spaceships);
+			AI::playerhit(bomb.atom, bomb.enemybullets, playerobj);
+
 			for (int i = 0; i < no_missiles; i++) {
 				if (collision::Collide((missile[i].particle), playerobj.particle) && (missile[i].isVisible())) {
-					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
-					al_rest(1);
-					missile[i].destroy();
-					lives--;
+					if (PowerObj.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj.enabled = false;
+						lives++;
+					}
+					else if (PowerObj2.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj2.enabled = false;
+						lives++;
+					}
+					else {
+						Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+						al_rest(1);
+						missile[i].destroy();
+						lives--;
+					}
+
 				}
 			}
 
 			for (int i = 0; i < no_spaceships; i++) {
 				if (collision::Collide((enemyspaceship[i].particle), playerobj.particle) && (enemyspaceship[i].isVisible())) {
-					Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
-					al_rest(1);
-					enemyspaceship[i].destroy();
-					lives--;
+					if (PowerObj.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj.enabled = false;
+						enemyspaceship[i].destroy();
+					}
+
+					else if (PowerObj2.enabled) {
+						playerobj.playershipimage = al_load_bitmap("playa.png");
+						PowerObj2.enabled = false;
+						enemyspaceship[i].destroy();
+					}
+					else
+					{
+						Explosion.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "Explosion.wav");
+						al_rest(1);
+						enemyspaceship[i].destroy();
+						lives--;
+					}
 				}
 			}
-			
+
+			if (collision::Collide((PowerObj.particle), playerobj.particle)) {
+				PowerObj.enabled = true;
+				PowerObj.destroy();
+				playerobj.playershipimage = al_load_bitmap("playa shield.png");
+
+
+			}
+			if (collision::Collide((PowerObj2.particle), playerobj.particle)) {
+				PowerObj2.enabled = true;
+				PowerObj2.destroy();
+				playerobj.playershipimage = al_load_bitmap("playa shield.png");
+			}
 			if (lives==0)
 			{
 				playerobj.destroy();
@@ -355,10 +413,15 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 				al_destroy_event_queue(event_queue);
 				exit(0);
 
-					}
-					al_flip_display();
-				}
 			}
-
+			al_flip_display();
 		}
+	}
+
+	
 }
+/*
+void setText(ALLEGRO_FONT *text, const char *word, short x_index, short y_index, ALLEGRO_DISPLAY *display, ALLEGRO_COLOR colour) {
+	al_draw_text(text, colour, x_index, y_index, ALLEGRO_ALIGN_RIGHT, word); //Otherwise display the text on the screen
+}
+*/

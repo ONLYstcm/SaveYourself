@@ -21,11 +21,14 @@ namespace nukes
 	}
 
 	void nukes::fire(double boundx, double boundy, Vector pos, Vector aim) {
+
+	if (enemybullets < amo) {
 		atom[enemybullets].create(boundx, boundy);
 		atom[enemybullets].initialise(pos.x, pos.y,4,4);
 		atom[enemybullets].setDirection(aim);
 		enemybullets++;
 		enemyrender();
+		}
 	}
 
 	void nukes::enemyrender() {//refresh missile bitmap
