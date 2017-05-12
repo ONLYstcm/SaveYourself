@@ -23,7 +23,7 @@ void clear_disp(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background){
 	al_draw_bitmap(background, 0, 0, 0);
 }
 
-void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1, int loadscore=0, int loadlives=3) {
+void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1, int loadscore=0, int loadlives=3, bool loadstate=false) {
 	level = loadlevel;
 	points = loadscore;
 	lives = loadlives;
@@ -37,8 +37,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 	bool levelChangeFlag = false;
 	bool levelChangeFlag2 = false;
 	bool levelChangeFlag3 = false;
-	bool loadstate = false;
-
+	bool endgame = false;
 	//Creating game objects
 	Vector target;
 	player::playership playerobj;
@@ -131,7 +130,27 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events); //Necessary for getting mouse input
 		al_get_keyboard_state(&keyState);
-		if ((points >= 25 && levelChangeFlag == false) || (loadstate == true && loadlevel == 2))//the flag was used so that code runs only once
+		if (lives == 0 && endgame == false)
+		{
+			endgame = true;
+			playerobj.destroy();
+			al_destroy_bitmap(background);
+			background = al_load_bitmap("Game_Over.jpg");;
+			//background_music.destroySound();
+		}
+		if (loadstate == true && loadlevel == 2)//the flag was used so that code runs only once
+		{
+			levelChangeFlag = true;
+			loadstate = false;
+			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+			al_rest(1);
+			al_destroy_bitmap(background);
+			background = al_load_bitmap("Background_Level2.jpg");
+			spaceshipimage = al_load_bitmap("EnemyLevel2.png");
+			level = 2;
+		}
+		
+		if ((points >= 25 && levelChangeFlag == false))
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -141,7 +160,18 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			level = 2;
 			levelChangeFlag = true;
 		}
-		if ((points >= 100 && levelChangeFlag2 == false) ||(loadstate==true && loadlevel==3))//the flag was used so that code runs only once
+		if (loadstate == true && loadlevel == 3)//the flag was used so that code runs only once
+		{
+			levelChangeFlag2 = true;
+			loadstate = false;
+			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
+			al_rest(1);
+			al_destroy_bitmap(background);
+			background = al_load_bitmap("Background_Level3.jpg");
+			spaceshipimage = al_load_bitmap("EnemyLevel3.png");
+			level = 3;
+		}
+		if ((points >= 100 && levelChangeFlag2 == false))
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
 			al_rest(1);
@@ -151,16 +181,15 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 			level = 3;
 			levelChangeFlag2 = true;
 		}
-		if (points >= 150 && levelChangeFlag3 == false && loadstate==false)
+		if (points >= 150 && levelChangeFlag3 == false)
 		{
 			Level_Change.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "alert-5.ogg");
-			//End Credits go here
-			clear_disp(display, background);
-			background = al_load_bitmap("winner.jpg");
-			al_flip_display();
-			al_rest(10);
+			playerobj.destroy();
+			al_destroy_bitmap(background);
+			background = al_load_bitmap("EndCredits.jpg");
 			levelChangeFlag3 = true;
-			exit(0);
+			endgame = true;
+
 		}
 
 		if (al_key_down(&keyState, ALLEGRO_KEY_1))// Saves Game
@@ -404,19 +433,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 				PowerObj2.destroy();
 				playerobj.playershipimage = al_load_bitmap("playa shield.png");
 			}
-			if (lives==0)
-			{
-				playerobj.destroy();
-				//background = al_load_bitmap("Game_Over.jpg");
-				//al_rest(5);
-				alive = false;
-				background_music.destroySound();
-				al_destroy_timer(timer);
-				al_destroy_display(display);
-				al_destroy_event_queue(event_queue);
-				exit(0);
-
-			}
+		
 			al_flip_display();
 		}
 	}

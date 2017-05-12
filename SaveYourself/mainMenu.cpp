@@ -224,7 +224,7 @@ int main() {
 						menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
 						al_destroy_bitmap(background);
 						background = al_load_bitmap("Background_Level1.jpg");
-						play(display, background, savedlevel,savedscore,savedlives);
+						play(display, background, savedlevel,savedscore,savedlives,true);
 						break;
 					case 4:
 						break;
