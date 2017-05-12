@@ -310,7 +310,7 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 					}
 					break;
 				case 3:
-					
+					//
 					PowerObj2.render();
 					PowerObj2.move();
 					for (int i = 0; i < missilesPresent; i++) {
