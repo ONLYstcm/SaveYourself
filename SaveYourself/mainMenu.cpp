@@ -29,6 +29,7 @@ void LoadScore() {
 	savedlevel = (line[0] - '0');
 	savedlives = (line[1] - '0');
 	cout << line.length();
+
 	for (int i = line.length() - 1; i>1; i--)
 	{
 		savedscore += (line[i] - '0')*pow(10, j);
