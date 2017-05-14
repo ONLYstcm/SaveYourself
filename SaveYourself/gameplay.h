@@ -429,7 +429,6 @@ void play(ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *background, int loadlevel=1,
 				PowerObj.destroy();
 				playerobj.playershipimage = al_load_bitmap("playa shield.png");
 
-
 			}
 			if (collision::Collide((PowerObj2.particle), playerobj.particle)) {
 				PowerObj2.enabled = true;

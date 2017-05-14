@@ -11,7 +11,11 @@
 #include "enemies.h"
 #include "gameplay.h"
 #include "player.h"
+#include <fstream>
+#include <ios>
 #include "Sound_Engine_Katrina.h"
+
+
 
 using namespace std;
 
@@ -29,7 +33,6 @@ void LoadScore() {
 	savedlevel = (line[0] - '0');
 	savedlives = (line[1] - '0');
 	cout << line.length();
-
 	for (int i = line.length() - 1; i>1; i--)
 	{
 		savedscore += (line[i] - '0')*pow(10, j);
@@ -39,6 +42,8 @@ void LoadScore() {
 }
 int main() {
 	system("playBootAnimation.bat");
+	string s;
+	fstream file;
 	Sound_Engine_Katrina soundObj;
 	Sound_Engine_Katrina menu_item;
 	soundObj.playSound(ALLEGRO_PLAYMODE_LOOP, 1, 0, 1, "Background.ogg");
@@ -61,6 +66,10 @@ int main() {
 	al_install_mouse();
 	al_install_keyboard();
 
+
+	cout << "Please enter your name?" << endl;
+	string name;
+	getline(cin, name);
 
 	/* Center the game window on the desktop */
 	ALLEGRO_MONITOR_INFO aminfo;
@@ -86,27 +95,22 @@ int main() {
 	al_set_window_position(display, 0, 0);
 	al_set_window_title(display, "SAVE YOURSELF!");
 	
-	/*cout << "Please enter your name?" << endl;
-	string name;
-	getline(cin, name);
-	*/
-
 	al_clear_to_color(al_map_rgb(0, 0, 0)); //Make window black
 
 	background = al_load_bitmap("Main_Menu.jpg");
 	al_draw_bitmap(background, 0, 0, 0);
 
-	blue = al_map_rgb(0, 222,255);
+	blue = al_map_rgb(0, 222, 255);
 	white = al_map_rgb(255, 255, 255);
 
-	struct menuItem{	//Circular Queue implementation for menu items
+	struct menuItem {	//Circular Queue implementation for menu items
 		const char * text;
 		ALLEGRO_FONT *font;
 		menuItem *next;
 		menuItem *prev;
 		short number;
 		int height;
-	}*start, *save, *load, *options, *leaderboards, *leave,*index;
+	}*start, *save, *load, *options, *leaderboards, *leave, *index;
 
 	//Memory allocation for menu items (linked list/circular queue)
 	{
@@ -132,7 +136,7 @@ int main() {
 			save->next = load;
 			load->prev = save;
 			save->text = "SAVE";
-			save->height = (save->prev->height)+75;
+		save->height = (save->prev->height) + 75;
 			save->number = 2;
 
 			//LOAD
@@ -228,8 +232,29 @@ int main() {
 						play(display, background, savedlevel,savedscore,savedlives,true);
 						break;
 					case 4:
+					soundObj.destroySound();
+					menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+					cout << "HELP\n================================================\n W - Move Forward\n S - Move Back\n D - Move right \n A - Move Left \n Space Bar - Shoot \n Mouse - Rotate Space Ship" << endl;
 						break;
 					case 5:
+					soundObj.destroySound();
+					menu_item.playSound(ALLEGRO_PLAYMODE_ONCE, 1, 0, 1, "futuresoundfx-19.ogg");
+
+					file.open("Leaderboard.txt", ios::in);
+
+					if (file.is_open())
+					{
+
+						while (getline(file, s))
+						{
+							cout << s << endl;
+
+						}
+						file.close();
+					}
+					else
+						cout << "Error opening file " << errno << endl;
+
 						break;
 					case 6:
 						exit(0);
@@ -242,6 +267,12 @@ int main() {
 				default:
 					break;
 				}
+				std::ofstream log("Leaderboard.txt", std::ios_base::app | std::ios_base::out);
+			if (points >= 150)
+			{
+
+				log << "/n" << name;
+			}
 		}
 
 		al_flip_display();
