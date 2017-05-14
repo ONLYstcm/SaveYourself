@@ -1,0 +1,9 @@
+Scott - AI Engine, Physics Engine, Collision Engine, Enemy Spaceship, missiles
+
+Brenton Chetty - Levels, Sound Engine, Enemy Spaceship, Save and Load states
+
+Adin - Player, Power-Ups
+
+Rishay - Player, Power-Ups
+
+Omeson - Menu, Credits
